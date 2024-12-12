@@ -8,10 +8,10 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Note\NoteReferences;
 use Manzadey\SaloonAmoCrm\Modules\Tag\TagReference;
 
-readonly class LeadReference
+class LeadReference
 {
     public function __construct(
-        protected MainConnector $connector
+        protected readonly MainConnector $connector
     )
     {
     }

@@ -11,11 +11,11 @@ use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagAttachRequest;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagCreateRequest;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagListRequest;
 
-readonly class TagReference
+class TagReference
 {
     public function __construct(
-        protected MainConnector $connector,
-        protected string $entityType,
+        protected readonly MainConnector $connector,
+        protected readonly string $entityType,
     ) {
     }
 

@@ -17,12 +17,12 @@ use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\Exceptions\Request\RequestException;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 
-readonly class Client
+class Client
 {
     protected MainConnector $connector;
 
     public function __construct(
-        private Configs\Config $config,
+        private readonly Configs\Config $config,
         protected Configs\TokenConfig $tokenConfig,
     ) {
         $this->connector = new MainConnector($this->config->getBaseDomain(), $this->getAuth());

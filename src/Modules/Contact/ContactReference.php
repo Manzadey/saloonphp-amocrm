@@ -6,7 +6,7 @@ namespace Manzadey\SaloonAmoCrm\Modules\Contact;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 
-readonly class ContactReference
+class ContactReference
 {
     public function __construct(
         protected MainConnector $connector

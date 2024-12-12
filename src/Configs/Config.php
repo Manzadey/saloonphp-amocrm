@@ -6,7 +6,7 @@ namespace Manzadey\SaloonAmoCrm\Configs;
 
 use Saloon\Traits\Makeable;
 
-readonly class Config
+class Config
 {
     use Makeable;
     

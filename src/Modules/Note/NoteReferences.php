@@ -9,11 +9,11 @@ use Manzadey\SaloonAmoCrm\Modules\Note\Requests\NoteItemRequest;
 use Manzadey\SaloonAmoCrm\Modules\Note\Requests\NoteListRequest;
 use Manzadey\SaloonAmoCrm\Modules\Note\Requests\NotesCreateRequest;
 
-readonly class NoteReferences
+class NoteReferences
 {
     public function __construct(
-        protected MainConnector $connector,
-        protected string $entityType,
+        protected readonly MainConnector $connector,
+        protected readonly string $entityType,
     )
     {
     }
