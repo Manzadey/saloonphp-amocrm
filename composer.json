@@ -1,0 +1,30 @@
+{
+  "name": "manzadey/saloonphp-amocrm",
+  "version": "0.0.0",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Manzadey Andrey",
+      "email": "andrey.manzadey@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.3",
+    "saloonphp/saloon": "^3.10",
+    "league/oauth2-client": "^2.8"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest"
+  },
+  "autoload": {
+    "psr-4": {
+      "Manzadey\\SaloonAmoCrm\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+    }
+  }
+}
