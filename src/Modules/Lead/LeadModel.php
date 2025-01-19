@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Lead;
 
 use Manzadey\SaloonAmoCrm\Contracts\HasTagsContract;
+use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\HasContacts;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\HasCustomFieldsValues;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\HasTags;
 
-class LeadModel extends Model implements HasTagsContract
+class LeadModel extends Model implements HasTagsContract, HasTaskContract
 {
     use HasContacts;
     use HasTags;

@@ -12,6 +12,7 @@ use Manzadey\SaloonAmoCrm\Exceptions\AmoCrm\AmoCrmExchangeAuthCodeException;
 use Manzadey\SaloonAmoCrm\Exceptions\AmoCrm\AmoCrmRefreshAccessTokenException;
 use Manzadey\SaloonAmoCrm\Modules\Account\Requests\AccountRequest;
 use Manzadey\SaloonAmoCrm\Modules\Contact\ContactReference;
+use Manzadey\SaloonAmoCrm\Modules\Task\TaskReference;
 use Manzadey\SaloonAmoCrm\Requests\OAuth2\AccessToken as AccessTokenRequest;
 use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\Exceptions\Request\RequestException;
@@ -145,5 +146,10 @@ class Client
     public function contacts(): ContactReference
     {
         return new ContactReference($this->connector());
+    }
+
+    public function tasks(string $entityType = null): TaskReference
+    {
+        return new TaskReference($this->connector(), $entityType);
     }
 }
