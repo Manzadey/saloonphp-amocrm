@@ -34,4 +34,9 @@ class ContactReference
 
         return $request;
     }
+
+    public function customFields(): Requests\ContactCustomFieldsListRequest
+    {
+        return new Requests\ContactCustomFieldsListRequest($this->connector);
+    }
 }
