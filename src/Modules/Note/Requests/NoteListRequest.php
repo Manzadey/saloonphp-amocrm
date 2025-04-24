@@ -25,8 +25,8 @@ class NoteListRequest extends Request
     public function __construct(
         protected readonly MainConnector $connector,
         protected readonly string $entityType,
-    )
-    {
+        protected readonly ?int $entityId = null,
+    ) {
     }
 
     /**
@@ -34,7 +34,13 @@ class NoteListRequest extends Request
      */
     public function resolveEndpoint(): string
     {
-        return "/$this->entityType/notes";
+        $path[] = $this->entityType;
+        if ($this->entityId) {
+            $path[] = $this->entityId;
+        }
+        $path[] = 'notes';
+
+        return implode('/', $path);
     }
 
     public function send(): Response|NoteListResponse

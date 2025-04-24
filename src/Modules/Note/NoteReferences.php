@@ -18,9 +18,9 @@ class NoteReferences
     {
     }
 
-    public function list(): NoteListRequest
+    public function list(?int $entityId = null): NoteListRequest
     {
-        return new NoteListRequest($this->connector, $this->entityType);
+        return new NoteListRequest($this->connector, $this->entityType, $entityId);
     }
 
     public function item(int $id, ?int $entityId = null): NoteItemRequest
