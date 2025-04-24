@@ -13,7 +13,7 @@ abstract class AbstractLeadRequest extends Request
     protected string $endpoint = '/leads';
 
     public function __construct(
-        protected readonly MainConnector $connector,
+        protected MainConnector $connector,
     ) {
     }
 

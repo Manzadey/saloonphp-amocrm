@@ -18,7 +18,7 @@ class LeadItemRequest extends AbstractLeadRequest
     protected ?string $response = LeadItemResponse::class;
 
     public function __construct(
-        protected readonly MainConnector $connector,
+        protected MainConnector $connector,
         protected readonly int $id,
     ) {
         parent::__construct($connector);
