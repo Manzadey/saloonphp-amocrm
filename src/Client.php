@@ -8,6 +8,7 @@ use Closure;
 use JsonException;
 use League\OAuth2\Client\Token\AccessToken;
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
+use Manzadey\SaloonAmoCrm\Connectors\OAuth2Connector;
 use Manzadey\SaloonAmoCrm\Exceptions\AmoCrm\AmoCrmExchangeAuthCodeException;
 use Manzadey\SaloonAmoCrm\Exceptions\AmoCrm\AmoCrmRefreshAccessTokenException;
 use Manzadey\SaloonAmoCrm\Modules\Account\Requests\AccountRequest;
@@ -22,11 +23,19 @@ class Client
 {
     protected MainConnector $connector;
 
+    protected OAuth2Connector $OAuth2Connector;
+
     public function __construct(
         private readonly Configs\Config $config,
         protected Configs\TokenConfig $tokenConfig,
     ) {
         $this->connector = new MainConnector($this->config->getBaseDomain(), $this->getAuth());
+        $this->OAuth2Connector = new Connectors\OAuth2Connector(
+            baseDomain: $this->getConfig()->getBaseDomain(),
+            clientId: $this->getConfig()->getClientId(),
+            clientSecret: $this->getConfig()->getClientSecret(),
+            redirectUri: $this->getConfig()->getRedirectUri(),
+        );
     }
 
     public function getConfig(): Configs\Config
@@ -91,12 +100,7 @@ class Client
 
     public function oAuth2(): Connectors\OAuth2Connector
     {
-        return new Connectors\OAuth2Connector(
-            baseDomain: $this->getConfig()->getBaseDomain(),
-            clientId: $this->getConfig()->getClientId(),
-            clientSecret: $this->getConfig()->getClientSecret(),
-            redirectUri: $this->getConfig()->getRedirectUri(),
-        );
+        return $this->OAuth2Connector;
     }
 
     public function getTokenConfig(): Configs\TokenConfig
