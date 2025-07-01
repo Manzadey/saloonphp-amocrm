@@ -26,15 +26,20 @@ class LeadFilter extends AbstractFilter
     public function addStatus(array|int $statusId, ?int $pipelineId = null): static
     {
         $statuses = $this->get('statuses', []);
-
-        $status = ['pipeline_id' => $pipelineId ?? $this->get('pipeline_id')];
+        $pipelineIdToUse = $pipelineId ?? $this->get('pipeline_id');
 
         if (is_array($statusId)) {
             foreach ($statusId as $id) {
-                $this->addStatus($id, $pipelineId);
+                $statuses[] = [
+                    'pipeline_id' => $pipelineIdToUse,
+                    'status_id' => $id
+                ];
             }
         } else {
-            $statuses[] = $status + ['status_id' => $statusId];
+            $statuses[] = [
+                'pipeline_id' => $pipelineIdToUse,
+                'status_id' => $statusId
+            ];
         }
 
         return $this->statuses($statuses);
