@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Task;
 
+use InvalidArgumentException;
 use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 
 class TaskModel extends Model
 {
+    public const TYPE_CALL = 1;
+
+    public const TYPE_MEETING = 2;
+
     public function id(): ?int
     {
         return $this->get('id');
@@ -128,7 +133,21 @@ class TaskModel extends Model
 
     public function setTaskTypeId(int $taskTypeId): static
     {
+        if (!in_array($taskTypeId, [self::TYPE_CALL, self::TYPE_MEETING])) {
+            throw new InvalidArgumentException('Invalid task type');
+        }
+
         return $this->add('task_type_id', $taskTypeId);
+    }
+
+    public function typeCall(): static
+    {
+        return $this->setTaskTypeId(self::TYPE_CALL);
+    }
+
+    public function typeMeeting(): static
+    {
+        return $this->setTaskTypeId(self::TYPE_MEETING);
     }
 
     public function text(): ?string
