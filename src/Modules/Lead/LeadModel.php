@@ -107,6 +107,11 @@ class LeadModel extends Model implements HasTagsContract, HasTaskContract
         return $this->get('status_id');
     }
 
+    public function setStatusId(int $statusId): static
+    {
+        return $this->add('status_id', $statusId);
+    }
+
     public function lossReasonId(): ?int
     {
         return $this->get('loss_reason_id');
