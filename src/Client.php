@@ -156,4 +156,9 @@ class Client
     {
         return new TaskReference($this->connector(), $entityType);
     }
+
+    public function users(): Modules\User\UserReference
+    {
+        return new Modules\User\UserReference($this->connector);
+    }
 }
