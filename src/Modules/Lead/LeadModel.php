@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Lead;
 
+use Manzadey\SaloonAmoCrm\Contracts\CustomFieldsValuesContract;
 use Manzadey\SaloonAmoCrm\Contracts\HasTagsContract;
 use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\HasContacts;
@@ -11,7 +12,7 @@ use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\HasCustomFieldsValues;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\HasTags;
 
-class LeadModel extends Model implements HasTagsContract, HasTaskContract
+class LeadModel extends Model implements HasTagsContract, HasTaskContract, CustomFieldsValuesContract
 {
     use HasContacts;
     use HasTags;
@@ -150,11 +151,6 @@ class LeadModel extends Model implements HasTagsContract, HasTaskContract
     public function isDeleted(): ?bool
     {
         return $this->get('is_deleted');
-    }
-
-    public function customFieldsValues(): ?array
-    {
-        return $this->get('custom_fields_values');
     }
 
     public function score(): ?int
