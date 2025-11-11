@@ -51,18 +51,24 @@ class LeadModelTest extends TestCase
 
     public function testGetWithDotNotation(): void
     {
-        $model = new LeadModel([
+        $this->leadModel->set([
             'nested' => [
                 'key' => 'value'
             ]
         ]);
 
-        $this->assertEquals('value', $model->get('nested.key'));
+        $this->assertEquals('value', $this->leadModel->get('nested.key'));
     }
 
     public function testGetWithDefault(): void
     {
-        $model = new LeadModel();
-        $this->assertEquals('default', $model->get('nonexistent', 'default'));
+        $this->assertEquals('default', $this->leadModel->get('nonexistent', 'default'));
+    }
+
+    public function testId(): void
+    {
+        $this->assertNull($this->leadModel->id());
+        $this->assertSame($this->leadModel, $this->leadModel->setId(123));
+        $this->assertEquals(123, $this->leadModel->id());
     }
 }
