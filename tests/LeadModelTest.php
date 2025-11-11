@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Manzadey\tests;
 
+use Manzadey\SaloonAmoCrm\Contracts\CustomFieldsValuesContract;
+use Manzadey\SaloonAmoCrm\Contracts\HasTagsContract;
+use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\HasContacts;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\HasCustomFieldsValues;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Model;
-use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\HasTags;
 use PHPUnit\Framework\TestCase;
 
 class LeadModelTest extends TestCase
@@ -20,19 +22,17 @@ class LeadModelTest extends TestCase
         $this->leadModel = new LeadModel();
     }
 
-    public function testHasTagsTrait(): void
+    public function testImplementsContracts(): void
     {
-        $this->assertContains(HasTags::class, class_uses($this->leadModel));
-    }
+        $contracts = [
+            HasTagsContract::class,
+            HasTaskContract::class,
+            CustomFieldsValuesContract::class,
+        ];
 
-    public function testHasContactsTrait(): void
-    {
-        $this->assertContains(HasContacts::class, class_uses($this->leadModel));
-    }
-
-    public function testHasCustomFieldsValuesTrait(): void
-    {
-        $this->assertContains(HasCustomFieldsValues::class, class_uses($this->leadModel));
+        foreach ($contracts as $contract) {
+            $this->assertInstanceOf($contract, $this->leadModel);
+        }
     }
 
     public function testModelStoresData(): void
