@@ -18,6 +18,9 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
     use HasTags;
     use HasCustomFieldsValues;
 
+    /**
+     * @return int|null ID сделки
+     */
     public function id(): ?int
     {
         return $this->get('id');
@@ -28,16 +31,25 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->add('id', $id);
     }
 
+    /**
+     * @return string|null Cсылка на сделку
+     */
     public function link(): ?string
     {
         return $this->get('_links.self.href');
     }
 
+    /**
+     * @return string|null Строка переданная при запросе или порядковый указатель, если параметр не передан
+     */
     public function requestId(): ?string
     {
         return $this->get('request_id');
     }
 
+    /**
+     * @return string|null Название сделки. Поле не является обязательным
+     */
     public function name(): ?string
     {
         return $this->get('name');
@@ -53,6 +65,9 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->remove('name');
     }
 
+    /**
+     * @return int|null Бюджет сделки. Поле не является обязательным
+     */
     public function price(): ?int
     {
         return $this->get('price');
@@ -68,6 +83,9 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->remove('price');
     }
 
+    /**
+     * @return int|null ID воронки, в которую добавляется сделка. Поле не является обязательным
+     */
     public function pipelineId(): ?int
     {
         return $this->get('pipeline_id');
@@ -83,6 +101,9 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->remove('pipeline_id');
     }
 
+    /**
+     * @return int|null ID пользователя, ответственного за сделку. Поле не является обязательным
+     */
     public function responsibleUserId(): ?int
     {
         return $this->get('responsible_user_id');
@@ -98,11 +119,17 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->remove('responsible_user_id');
     }
 
+    /**
+     * @return int|null ID группы, в которой состоит ответственны пользователь за сделку
+     */
     public function groupId(): ?int
     {
         return $this->get('group_id');
     }
 
+    /**
+     * @return int|null ID статуса, в который добавляется сделка, по-умолчанию – первый этап главной воронки
+     */
     public function statusId(): ?int
     {
         return $this->get('status_id');
@@ -113,51 +140,82 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->add('status_id', $statusId);
     }
 
+    /**
+     * @return int|null ID причины отказа
+     */
     public function lossReasonId(): ?int
     {
         return $this->get('loss_reason_id');
     }
 
+    /**
+     * @return int|null ID пользователя, создающий сделку
+     */
     public function createdBy(): ?int
     {
         return $this->get('created_by');
     }
 
+    /**
+     * @return int|null ID пользователя, изменяющий сделку
+     */
     public function updatedBy(): ?int
     {
         return $this->get('updated_by');
     }
 
+    /**
+     * @return int|null Дата создания сделки, передается в Unix Timestamp
+
+     */
     public function createdAt(): ?int
     {
         return $this->get('created_at');
     }
 
+    /**
+     * @return int|null Дата изменения сделки, передается в Unix Timestamp
+     */
     public function updatedAt(): ?int
     {
         return $this->get('updated_at');
     }
 
+    /**
+     * @return int|null Дата закрытия сделки, передается в Unix Timestamp
+     */
     public function closedAt(): ?int
     {
         return $this->get('closed_at');
     }
 
+    /**
+     * @return int|null Дата ближайшей задачи к выполнению, передается в Unix Timestamp
+     */
     public function closedTaskAt(): ?int
     {
         return $this->get('closed_task_at');
     }
 
+    /**
+     * @return bool|null Удалена ли сделка
+     */
     public function isDeleted(): ?bool
     {
         return $this->get('is_deleted');
     }
 
+    /**
+     * @return int|null Скоринг сделки
+     */
     public function score(): ?int
     {
         return $this->get('score');
     }
 
+    /**
+     * @return int|null ID аккаунта, в котором находится сделка
+     */
     public function accountId(): ?int
     {
         return $this->get('account_id');
