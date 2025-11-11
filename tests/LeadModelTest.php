@@ -71,4 +71,21 @@ class LeadModelTest extends TestCase
         $this->assertSame($this->leadModel, $this->leadModel->setId(123));
         $this->assertEquals(123, $this->leadModel->id());
     }
+
+    public function testLink(): void
+    {
+        $this->assertNull($this->leadModel->link());
+
+        $link = 'https://example.com/leads/123';
+
+        $this->leadModel->set([
+            '_links' => [
+                'self' => [
+                    'href' => $link
+                ]
+            ]
+        ]);
+        $this->assertEquals($link, $this->leadModel->link());
+
+    }
 }

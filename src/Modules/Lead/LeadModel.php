@@ -28,7 +28,7 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->add('id', $id);
     }
 
-    public function link(): string
+    public function link(): ?string
     {
         return $this->get('_links.self.href');
     }
