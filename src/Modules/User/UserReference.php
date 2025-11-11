@@ -18,4 +18,9 @@ class UserReference
     {
         return new Requests\UserListRequest($this->connector);
     }
+
+    public function item(int $id): Requests\UserItemRequest
+    {
+        return new Requests\UserItemRequest($this->connector, $id);
+    }
 }
