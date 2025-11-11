@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Contracts;
 
-interface HasTaskContract
+interface TaskContract
 {
     public function id(): ?int;
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Task;
 
 use InvalidArgumentException;
-use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
+use Manzadey\SaloonAmoCrm\Contracts\TaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 
@@ -87,7 +87,7 @@ class TaskModel extends Model
         return $this->add('group_id', $groupId);
     }
 
-    public function setEntity(HasTaskContract $model): static
+    public function setEntity(TaskContract $model): static
     {
         $type = match (get_class($model)) {
             LeadModel::class => 'leads',

@@ -6,7 +6,7 @@ namespace Manzadey\tests;
 
 use Manzadey\SaloonAmoCrm\Contracts\CustomFieldsValuesContract;
 use Manzadey\SaloonAmoCrm\Contracts\TagsContract;
-use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
+use Manzadey\SaloonAmoCrm\Contracts\TaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\HasContacts;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\HasCustomFieldsValues;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
@@ -26,7 +26,7 @@ class LeadModelTest extends TestCase
     {
         $contracts = [
             TagsContract::class,
-            HasTaskContract::class,
+            TaskContract::class,
             CustomFieldsValuesContract::class,
         ];
 
