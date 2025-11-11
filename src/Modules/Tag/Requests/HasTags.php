@@ -18,18 +18,22 @@ trait HasTags
 
     public function setTags(?array $tags = null): static
     {
-        return $this->add(
-            key: '_embedded',
-            value: array_merge_recursive($this->get('_embedded', []), [
-                    'tags' => is_array($tags) ? array_map(
-                        static fn(TagModel|array $tag): array => $tag instanceof TagModel ?
-                            $tag->all() :
-                            $tag,
-                        $tags
-                    ) : $tags
-                ]
-            )
+        $embedded = $this->get('_embedded', []);
+
+        if (empty($tags)) {
+            unset($embedded['tags']);
+
+            return $this->add('_embedded', $embedded);
+        }
+
+        $embedded['tags'] = array_map(
+            static fn(TagModel|array $tag): array => $tag instanceof TagModel ?
+                $tag->all() :
+                $tag,
+            $tags
         );
+
+        return $this->add('_embedded', $embedded);
     }
 
     public function clearTags(): static
