@@ -7,8 +7,6 @@ namespace Manzadey\tests;
 use Manzadey\SaloonAmoCrm\Contracts\CustomFieldsValuesContract;
 use Manzadey\SaloonAmoCrm\Contracts\TagsContract;
 use Manzadey\SaloonAmoCrm\Contracts\TaskContract;
-use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\HasContacts;
-use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\HasCustomFieldsValues;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 use PHPUnit\Framework\TestCase;

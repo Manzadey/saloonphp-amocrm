@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Task\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Task\Responses\TaskListResponse;
-use Saloon\Enums\Method;
 use Manzadey\SaloonAmoCrm\Query;
+use Saloon\Enums\Method;
 use Saloon\Http\Response;
 
 class TaskListRequest extends AbstractTaskRequest
