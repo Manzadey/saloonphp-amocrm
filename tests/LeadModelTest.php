@@ -86,6 +86,16 @@ class LeadModelTest extends TestCase
             ]
         ]);
         $this->assertEquals($link, $this->leadModel->link());
+    }
 
+    public function testRequestId(): void
+    {
+        $this->assertNull($this->leadModel->requestId());
+
+        $this->leadModel->set([
+            'request_id' => '1234567890'
+        ]);
+
+        $this->assertEquals('1234567890', $this->leadModel->requestId());
     }
 }
