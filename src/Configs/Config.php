@@ -19,21 +19,33 @@ class Config
     {
     }
 
+    /**
+     * @return string Домен в amoCRM
+     */
     public function getBaseDomain(): string
     {
         return $this->baseDomain;
     }
 
+    /**
+     * @return string Redirect URI указанный в настройках интеграции. Должен четко совпадать с тем, что указан в настройках
+     */
     public function getRedirectUri(): string
     {
         return $this->redirectUri;
     }
 
+    /**
+     * @return string ID интеграции
+     */
     public function getClientId(): string
     {
         return $this->clientId;
     }
 
+    /**
+     * @return string Секрет интеграции
+     */
     public function getClientSecret(): string
     {
         return $this->clientSecret;
