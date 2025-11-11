@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Tag\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
-use Manzadey\SaloonAmoCrm\Contracts\HasTagsContract;
+use Manzadey\SaloonAmoCrm\Contracts\TagsContract;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -33,7 +33,7 @@ class TagAttachRequest extends Request implements HasBody
         return "/$this->entityType";
     }
 
-    public function model(HasTagsContract $model): static
+    public function model(TagsContract $model): static
     {
         $this->body()->add(value: $model->all());
 

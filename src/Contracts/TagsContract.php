@@ -6,7 +6,7 @@ namespace Manzadey\SaloonAmoCrm\Contracts;
 
 use Manzadey\SaloonAmoCrm\Modules\Tag\TagModel;
 
-interface HasTagsContract
+interface TagsContract
 {
     public function tags(): array;
 

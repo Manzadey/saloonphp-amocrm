@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Tag;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
-use Manzadey\SaloonAmoCrm\Contracts\HasTagsContract;
+use Manzadey\SaloonAmoCrm\Contracts\TagsContract;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagAttachRequest;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagCreateRequest;
@@ -32,7 +32,7 @@ class TagReference
         );
     }
 
-    public function update(?HasTagsContract $model = null): TagAttachRequest
+    public function update(?TagsContract $model = null): TagAttachRequest
     {
         return TagAttachRequest::make($this->connector, $this->entityType)
             ->when($model !== null, static fn(TagAttachRequest $request): TagAttachRequest => $request->model($model));

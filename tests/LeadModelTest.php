@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\tests;
 
 use Manzadey\SaloonAmoCrm\Contracts\CustomFieldsValuesContract;
-use Manzadey\SaloonAmoCrm\Contracts\HasTagsContract;
+use Manzadey\SaloonAmoCrm\Contracts\TagsContract;
 use Manzadey\SaloonAmoCrm\Contracts\HasTaskContract;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\HasContacts;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\HasCustomFieldsValues;
@@ -25,7 +25,7 @@ class LeadModelTest extends TestCase
     public function testImplementsContracts(): void
     {
         $contracts = [
-            HasTagsContract::class,
+            TagsContract::class,
             HasTaskContract::class,
             CustomFieldsValuesContract::class,
         ];
