@@ -109,9 +109,9 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
         return $this->get('responsible_user_id');
     }
 
-    public function setResponsibleUserId(int $pipeline_id): static
+    public function setResponsibleUserId(int $responsibleUserId): static
     {
-        return $this->add('responsible_user_id', $pipeline_id);
+        return $this->add('responsible_user_id', $responsibleUserId);
     }
 
     public function removeResponsibleUserId(): static
