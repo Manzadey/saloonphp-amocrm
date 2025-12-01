@@ -70,4 +70,16 @@ class ModelHasTagsTraitTest extends TestCase
         $this->assertEquals('test_value', $data['test_data']['test_key']);
         $this->assertCount(0, $this->classWithTrait->tags());
     }
+
+    public function testTagsToAddList(): void
+    {
+        $tagsToAdd = $this->classWithTrait->tagsToAdd();
+        $this->assertIsArray($tagsToAdd);
+        $this->assertEmpty($tagsToAdd);
+
+        $this->classWithTrait->appendToTagsToAdd(new TagModel(['name' => 'tag_one']));
+        $tagsToAdd = $this->classWithTrait->tagsToAdd();
+        $this->assertIsArray($tagsToAdd);
+        $this->assertCount(1, $tagsToAdd);
+    }
 }
