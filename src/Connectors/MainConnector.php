@@ -11,8 +11,6 @@ use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
 
 class MainConnector extends Connector
 {
-    use AlwaysThrowOnErrors;
-
     public function __construct(
         protected readonly string $baseDomain,
         protected readonly Closure $auth,
