@@ -25,6 +25,11 @@
       "Manzadey\\SaloonAmoCrm\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Manzadey\\SaloonAmoCrm\\Tests\\": "tests/"
+    }
+  },
   "config": {
     "allow-plugins": {
     }

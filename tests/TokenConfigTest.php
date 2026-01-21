@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Manzadey\tests;
+namespace Manzadey\SaloonAmoCrm\Tests;
 
 use League\OAuth2\Client\Token\AccessToken;
 use Manzadey\SaloonAmoCrm\Configs\TokenConfig;

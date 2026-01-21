@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Manzadey\tests;
+namespace Manzadey\SaloonAmoCrm\Tests;
 
 use Closure;
 use DateTimeImmutable;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Manzadey\tests;
+namespace Manzadey\SaloonAmoCrm\Tests;
 
 use Manzadey\SaloonAmoCrm\Contracts\CustomFieldsValuesContract;
 use Manzadey\SaloonAmoCrm\Contracts\TagsContract;

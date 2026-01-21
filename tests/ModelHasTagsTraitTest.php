@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Manzadey\tests;
+namespace Manzadey\SaloonAmoCrm\Tests;
 
 use Manzadey\SaloonAmoCrm\Modules\Model;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\HasTags;
