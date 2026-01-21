@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Tests;
 
-use League\OAuth2\Client\Token\AccessToken;
 use Manzadey\SaloonAmoCrm\Configs\TokenConfig;
 use PHPUnit\Framework\TestCase;
 
