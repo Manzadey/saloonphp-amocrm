@@ -11,25 +11,32 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 
-class AccountRequest extends Request
+final class AccountRequest extends Request
 {
     protected Method $method = Method::GET;
 
     protected ?string $response = AccountResponse::class;
 
     /**
-     * @param array<string|AccountWithQueryEnum>|null $with
+     * @var array<string> Уникальный список значений `with`, отдаваемых в query-строку.
      */
-    public function __construct(
-        protected readonly MainConnector $connector,
-        protected readonly ?array $with = null,
-    )
-    {
-    }
+    private array $with = [];
 
     /**
-     * @inheritDoc
+     * @param MainConnector $connector
+     * @param array<string|AccountWithQueryEnum>|null $with Список расширений ответа `with`.
      */
+    public function __construct(
+        private readonly MainConnector $connector,
+        ?array $with = null,
+    ) {
+        if ($with !== null) {
+            foreach ($with as $item) {
+                $this->addWith($item);
+            }
+        }
+    }
+
     public function resolveEndpoint(): string
     {
         return '/account';
@@ -37,32 +44,26 @@ class AccountRequest extends Request
 
     protected function defaultQuery(): array
     {
-        if (is_array($this->with)) {
-            return [
-                'with' => implode(',', $this->with),
-            ];
+        if ($this->with === []) {
+            return [];
         }
 
-        return [];
+        return ['with' => implode(',', $this->with)];
     }
 
     public function with(AccountWithQueryEnum|string $with): static
     {
-        $query = $this->query()->get('with');
-        $query = is_null($query) ? [] : explode(',', $query);
-        $query[] = $with instanceof AccountWithQueryEnum ? $with->value : $with;
-        $this->query()->add('with', implode(',', $query));
+        $this->addWith($with);
 
         return $this;
     }
 
     public function withAll(): static
     {
-        $this->query()->add('with', null);
-
-        foreach (AccountWithQueryEnum::cases() as $case) {
-            $this->with($case);
-        }
+        $this->with = array_map(
+            static fn(AccountWithQueryEnum $case): string => $case->value,
+            AccountWithQueryEnum::cases(),
+        );
 
         return $this;
     }
@@ -70,5 +71,14 @@ class AccountRequest extends Request
     public function send(): Response|AccountResponse
     {
         return $this->connector->send($this);
+    }
+
+    private function addWith(AccountWithQueryEnum|string $with): void
+    {
+        $value = $with instanceof AccountWithQueryEnum ? $with->value : $with;
+
+        if (!in_array($value, $this->with, true)) {
+            $this->with[] = $value;
+        }
     }
 }

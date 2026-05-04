@@ -6,92 +6,63 @@ namespace Manzadey\SaloonAmoCrm\Modules\Account\Responses;
 
 use Saloon\Http\Response;
 
-class AccountResponse extends Response
+/**
+ * Поля, помеченные `nullable`, возвращают `null`, если они отсутствуют в ответе AmoCRM
+ * (например, не были запрошены через `with` или не предоставлены тарифом).
+ */
+final class AccountResponse extends Response
 {
-    /**
-     * @throws \JsonException
-     */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->json('id');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->json('name');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getSubdomain(): string
+    public function getSubdomain(): ?string
     {
         return $this->json('subdomain');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getCreatedAt(): int
+    public function getCreatedAt(): ?int
     {
         return $this->json('created_at');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getCreatedBy(): int
+    public function getCreatedBy(): ?int
     {
         return $this->json('created_by');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getUpdatedAt(): int
+    public function getUpdatedAt(): ?int
     {
         return $this->json('updated_at');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getUpdatedBy(): int
+    public function getUpdatedBy(): ?int
     {
         return $this->json('updated_by');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getCurrentUserId(): int
+    public function getCurrentUserId(): ?int
     {
         return $this->json('current_user_id');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->json('country');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getCurrency(): string
+    public function getCurrency(): ?string
     {
         return $this->json('currency');
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getCurrencySymbol(): string
+    public function getCurrencySymbol(): ?string
     {
         return $this->json('currency_symbol');
     }
