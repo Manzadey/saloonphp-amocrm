@@ -64,7 +64,7 @@ class CustomFieldModel extends Model
     public function values(): array
     {
         return array_map(
-            static fn(array $value): CustomFieldValueModel => new CustomFieldValueModel($value),
+            static fn (array $value): CustomFieldValueModel => new CustomFieldValueModel($value),
             $this->get('values', [])
         );
     }
@@ -78,7 +78,7 @@ class CustomFieldModel extends Model
         return $this->add(
             key: 'values',
             value: array_map(
-                static fn(CustomFieldValueModel|array $value): array => $value instanceof CustomFieldValueModel ?
+                static fn (CustomFieldValueModel|array $value): array => $value instanceof CustomFieldValueModel ?
                     $value->all() :
                     $value,
                 $values

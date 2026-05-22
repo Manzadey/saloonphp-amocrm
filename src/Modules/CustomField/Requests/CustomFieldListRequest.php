@@ -21,8 +21,7 @@ class CustomFieldListRequest extends Request
     public function __construct(
         protected readonly MainConnector $connector,
         protected readonly string $entityType,
-    )
-    {
+    ) {
     }
 
     /**

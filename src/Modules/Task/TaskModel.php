@@ -25,7 +25,6 @@ class TaskModel extends Model
         return $this->add('id', $id);
     }
 
-
     public function createdBy(): ?int
     {
         return $this->get('created_by');
@@ -75,7 +74,6 @@ class TaskModel extends Model
     {
         return $this->add('responsible_user_id', $responsibleUserId);
     }
-
 
     public function groupId(): ?int
     {

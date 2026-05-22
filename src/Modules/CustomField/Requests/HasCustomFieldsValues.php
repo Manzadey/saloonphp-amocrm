@@ -18,7 +18,7 @@ trait HasCustomFieldsValues
     public function customFieldsValues(): array
     {
         return array_map(
-            static fn(array $customField): CustomFieldModel => new CustomFieldModel($customField),
+            static fn (array $customField): CustomFieldModel => new CustomFieldModel($customField),
             $this->get('custom_fields_values', []),
         );
     }
@@ -32,7 +32,7 @@ trait HasCustomFieldsValues
         return $this->add(
             key: 'custom_fields_values',
             value: array_map(
-                static fn(CustomFieldModel|array $field): array => $field instanceof CustomFieldModel ?
+                static fn (CustomFieldModel|array $field): array => $field instanceof CustomFieldModel ?
                     $field->all() :
                     $field,
                 $fields,

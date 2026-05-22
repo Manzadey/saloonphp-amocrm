@@ -18,8 +18,7 @@ class UserItemRequest extends AbstractUserRequest
     public function __construct(
         protected MainConnector $connector,
         protected int $id,
-    )
-    {
+    ) {
         parent::__construct($connector);
     }
 

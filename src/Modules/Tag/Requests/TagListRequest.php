@@ -17,14 +17,12 @@ class TagListRequest extends Request
     use Query\HasFilterQuery;
     use Query\HasSearchQuery;
 
-
     protected Method $method = Method::GET;
 
     public function __construct(
         protected readonly MainConnector $connector,
         protected readonly string $entityType,
-    )
-    {
+    ) {
     }
 
     /**

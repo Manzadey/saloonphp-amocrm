@@ -16,8 +16,7 @@ class MainConnector extends Connector
     public function __construct(
         protected readonly string $baseDomain,
         protected readonly Closure $auth,
-    )
-    {
+    ) {
     }
 
     /**

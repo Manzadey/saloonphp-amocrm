@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Manzadey\SaloonAmoCrm\Modules\Task\Responses;
 
 use Manzadey\SaloonAmoCrm\Modules\Task\TaskModel;

@@ -21,7 +21,7 @@ class LeadListResponse extends Response
     public function leads(): array
     {
         return array_map(
-            static fn(array $lead): LeadModel => new LeadModel($lead),
+            static fn (array $lead): LeadModel => new LeadModel($lead),
             $this->json('_embedded.leads', [])
         );
     }

@@ -15,7 +15,7 @@ trait HasContacts
     public function contacts(): array
     {
         return array_map(
-            static fn(array $contact): ContactModel => new ContactModel($contact),
+            static fn (array $contact): ContactModel => new ContactModel($contact),
             $this->get('_embedded.contacts', [])
         );
     }
@@ -30,7 +30,7 @@ trait HasContacts
             key: '_embedded',
             value: array_merge_recursive($this->get('_embedded', []), [
                 'contacts' => array_map(
-                    callback: static fn(ContactModel|array $value): array => array_intersect_key(
+                    callback: static fn (ContactModel|array $value): array => array_intersect_key(
                         ($value instanceof ContactModel ? $value->all() : $value),
                         array_flip(['id', 'is_main'])
                     ),

@@ -8,7 +8,6 @@ use Manzadey\SaloonAmoCrm\Enum\QueryOrderEnum;
 use Manzadey\SaloonAmoCrm\Enum\QueryOrderFieldEnum;
 use Saloon\Traits\RequestProperties\HasQuery;
 
-
 /**
  * @mixin HasQuery
  */

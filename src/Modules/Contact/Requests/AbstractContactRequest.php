@@ -8,14 +8,13 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 
-class AbstractContactRequest extends Request
+abstract class AbstractContactRequest extends Request
 {
     protected string $endpoint = '/contacts';
 
     public function __construct(
         protected readonly MainConnector $connector
-    )
-    {
+    ) {
     }
 
     /**

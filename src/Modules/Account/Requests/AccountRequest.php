@@ -23,8 +23,7 @@ class AccountRequest extends Request
     public function __construct(
         protected readonly MainConnector $connector,
         protected readonly ?array $with = null,
-    )
-    {
+    ) {
     }
 
     /**

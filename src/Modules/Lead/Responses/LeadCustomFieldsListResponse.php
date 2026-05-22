@@ -16,7 +16,7 @@ class LeadCustomFieldsListResponse extends Response
     public function fields(): array
     {
         return array_map(
-            static fn(array $customField): CustomFieldModel => new CustomFieldModel($customField),
+            static fn (array $customField): CustomFieldModel => new CustomFieldModel($customField),
             $this->json('_embedded.custom_fields', []),
         );
     }

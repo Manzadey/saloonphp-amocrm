@@ -8,7 +8,7 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 
-class AbstractUserRequest extends Request
+abstract class AbstractUserRequest extends Request
 {
     protected string $endpoint = '/users';
 

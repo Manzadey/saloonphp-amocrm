@@ -16,7 +16,7 @@ class LeadAddResponse extends Response
     public function leads(): array
     {
         return array_map(
-            static fn(array $item) => new LeadModel($item),
+            static fn (array $item) => new LeadModel($item),
             $this->json('_embedded.leads', []),
         );
     }
