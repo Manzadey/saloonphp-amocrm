@@ -20,7 +20,8 @@
     "phpunit/phpunit": "^12.4",
     "symfony/var-dumper": "^7.3",
     "friendsofphp/php-cs-fixer": "^3.95",
-    "phpstan/phpstan": "^2.1"
+    "phpstan/phpstan": "^2.1",
+    "amocrm/amocrm-api-library": "^1.15"
   },
   "autoload": {
     "psr-4": {
