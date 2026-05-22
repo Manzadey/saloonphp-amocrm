@@ -10,8 +10,7 @@ class UserReference
 {
     public function __construct(
         protected readonly MainConnector $connector
-    )
-    {
+    ) {
     }
 
     public function list(): Requests\UserListRequest

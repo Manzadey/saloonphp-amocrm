@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Manzadey\SaloonAmoCrm\Modules\Task;
 
 use Manzadey\SaloonAmoCrm\Filters\AbstractFilter;
@@ -23,7 +25,7 @@ class TaskFilter extends AbstractFilter
             return $this->add(
                 'task_type',
                 array_map(
-                    static fn(int|TaskTypeEnum $item) => $item instanceof TaskTypeEnum ? $item->value : $item,
+                    static fn (int|TaskTypeEnum $item) => $item instanceof TaskTypeEnum ? $item->value : $item,
                     $type
                 )
             );

@@ -17,10 +17,8 @@ class OAuth2Connector extends Connector implements HasBody
         protected readonly string $clientId,
         protected readonly string $clientSecret,
         protected readonly string $redirectUri,
-    )
-    {
+    ) {
     }
-
 
     public function resolveBaseUrl(): string
     {

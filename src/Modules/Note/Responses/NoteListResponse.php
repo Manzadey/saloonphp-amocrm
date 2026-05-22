@@ -15,7 +15,7 @@ class NoteListResponse extends Response
     public function notes(): array
     {
         return array_map(
-            static fn(array $note): NoteModel => new NoteModel($note),
+            static fn (array $note): NoteModel => new NoteModel($note),
             $this->json('_embedded.notes', [])
         );
     }

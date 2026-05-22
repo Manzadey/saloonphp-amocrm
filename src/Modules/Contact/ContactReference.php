@@ -10,8 +10,7 @@ class ContactReference
 {
     public function __construct(
         protected MainConnector $connector
-    )
-    {
+    ) {
     }
 
     public function list(): Requests\ContactListRequest
@@ -24,7 +23,7 @@ class ContactReference
         return $this->list()->querySearch($query);
     }
 
-    public function create(ContactModel $contactModel = null): Requests\ContactCreateRequest
+    public function create(?ContactModel $contactModel = null): Requests\ContactCreateRequest
     {
         $request = new Requests\ContactCreateRequest($this->connector);
 

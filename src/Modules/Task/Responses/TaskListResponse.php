@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Manzadey\SaloonAmoCrm\Modules\Task\Responses;
 
 use Manzadey\SaloonAmoCrm\Modules\Task\TaskModel;
@@ -15,7 +17,7 @@ class TaskListResponse extends Response
     public function tasks(): array
     {
         return array_map(
-            static fn(array $lead): TaskModel => new TaskModel($lead),
+            static fn (array $lead): TaskModel => new TaskModel($lead),
             $this->json('_embedded.tasks', [])
         );
     }

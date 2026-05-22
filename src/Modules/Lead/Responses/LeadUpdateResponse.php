@@ -8,5 +8,4 @@ use Saloon\Http\Response;
 
 class LeadUpdateResponse extends Response
 {
-
 }

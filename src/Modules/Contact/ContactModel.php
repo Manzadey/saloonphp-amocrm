@@ -71,7 +71,7 @@ class ContactModel extends Model
 
     public function setGroupId(int $id): static
     {
-        return $this->add('group_id',$id);
+        return $this->add('group_id', $id);
     }
 
     public function createdBy(): ?int

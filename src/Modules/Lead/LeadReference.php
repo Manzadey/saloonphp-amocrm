@@ -12,8 +12,7 @@ class LeadReference
 {
     public function __construct(
         protected readonly MainConnector $connector
-    )
-    {
+    ) {
     }
 
     public function list(): Requests\LeadListRequest
@@ -31,7 +30,7 @@ class LeadReference
         return $this->list()->querySearch($query);
     }
 
-    public function create(LeadModel $model = null): Requests\LeadCreateRequest
+    public function create(?LeadModel $model = null): Requests\LeadCreateRequest
     {
         $request = new Requests\LeadCreateRequest($this->connector);
 

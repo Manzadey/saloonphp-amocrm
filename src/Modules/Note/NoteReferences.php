@@ -14,8 +14,7 @@ class NoteReferences
     public function __construct(
         protected readonly MainConnector $connector,
         protected readonly string $entityType,
-    )
-    {
+    ) {
     }
 
     public function list(?int $entityId = null): NoteListRequest

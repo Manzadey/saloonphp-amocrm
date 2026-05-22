@@ -11,7 +11,7 @@ trait HasTags
     public function tags(): array
     {
         return array_map(
-            static fn(array $tag): TagModel => new TagModel($tag),
+            static fn (array $tag): TagModel => new TagModel($tag),
             $this->get('_embedded.tags', []),
         );
     }
@@ -27,7 +27,7 @@ trait HasTags
         }
 
         $embedded['tags'] = array_map(
-            static fn(TagModel|array $tag): array => $tag instanceof TagModel ?
+            static fn (TagModel|array $tag): array => $tag instanceof TagModel ?
                 $tag->all() :
                 $tag,
             $tags
@@ -52,7 +52,7 @@ trait HasTags
     public function tagsToAdd(): array
     {
         return array_map(
-            static fn(array $tag): TagModel => new TagModel($tag),
+            static fn (array $tag): TagModel => new TagModel($tag),
             $this->get('tags_to_add', []),
         );
     }

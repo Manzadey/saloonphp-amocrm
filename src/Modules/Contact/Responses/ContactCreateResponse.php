@@ -16,7 +16,7 @@ class ContactCreateResponse extends Response
     public function contacts(): array
     {
         return array_map(
-            static fn(array $contact): ContactModel => new ContactModel($contact),
+            static fn (array $contact): ContactModel => new ContactModel($contact),
             $this->json('_embedded.contacts', [])
         );
     }
@@ -28,7 +28,7 @@ class ContactCreateResponse extends Response
     public function contactsIds(): array
     {
         return array_map(
-            static fn(ContactModel $contact): int => $contact->id(),
+            static fn (ContactModel $contact): int => $contact->id(),
             $this->contacts(),
         );
     }

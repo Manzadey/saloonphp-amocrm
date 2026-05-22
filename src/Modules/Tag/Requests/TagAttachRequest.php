@@ -21,8 +21,7 @@ class TagAttachRequest extends Request implements HasBody
     public function __construct(
         protected readonly MainConnector $connector,
         protected readonly string $entityType,
-    )
-    {
+    ) {
     }
 
     /**

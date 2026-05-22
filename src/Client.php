@@ -59,7 +59,6 @@ class Client
             )
         );
 
-
         if ($response->clientError()) {
             throw new AmoCrmExchangeAuthCodeException(
                 $response->json('hint') ?? $response->getPsrResponse()->getReasonPhrase()
@@ -108,10 +107,9 @@ class Client
         return $this->tokenConfig;
     }
 
-
     public function getAuth(): Closure
     {
-        return function() {
+        return function () {
             $token = call_user_func($this->getTokenConfig()->getCallbackGetAccessToken());
 
             if ($token === null) {
@@ -152,7 +150,7 @@ class Client
         return new ContactReference($this->connector());
     }
 
-    public function tasks(string $entityType = null): TaskReference
+    public function tasks(?string $entityType = null): TaskReference
     {
         return new TaskReference($this->connector(), $entityType);
     }

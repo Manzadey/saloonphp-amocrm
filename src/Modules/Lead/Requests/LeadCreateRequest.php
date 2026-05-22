@@ -26,7 +26,7 @@ class LeadCreateRequest extends AbstractLeadRequest implements HasBody
         }
 
         $this->body()->add(value: $model->all());
-        
+
         return $this;
     }
 

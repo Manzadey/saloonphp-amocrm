@@ -7,11 +7,11 @@ namespace Manzadey\SaloonAmoCrm\Filters;
 use Saloon\Repositories\ArrayStore;
 use Saloon\Traits\Makeable;
 
-class AbstractFilter extends ArrayStore
+abstract class AbstractFilter extends ArrayStore
 {
     use Makeable;
 
-    public function range(string $name, string|int $from = null, string|int|null $to = null): static
+    public function range(string $name, string|int|null $from = null, string|int|null $to = null): static
     {
         return $this->add($name, array_filter(compact('from', 'to')));
     }
@@ -71,7 +71,7 @@ class AbstractFilter extends ArrayStore
      * @param int|null $to
      * @return $this
      */
-    public function createdAt(int $from = null, int $to = null): static
+    public function createdAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('created_at', $from, $to);
     }
@@ -81,7 +81,7 @@ class AbstractFilter extends ArrayStore
      * @param int|null $to
      * @return $this
      */
-    public function updatedAt(int $from = null, int $to = null): static
+    public function updatedAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('updated', $from, $to);
     }
@@ -91,7 +91,7 @@ class AbstractFilter extends ArrayStore
      * @param int|null $to
      * @return $this
      */
-    public function closestTaskAt(int $from = null, int $to = null): static
+    public function closestTaskAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('closest_task_at', $from, $to);
     }

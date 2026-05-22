@@ -24,18 +24,18 @@ class TagReference
         return new TagListRequest($this->connector, $this->entityType);
     }
 
-    public function create(TagModel|array $tag = null): TagCreateRequest
+    public function create(TagModel|array|null $tag = null): TagCreateRequest
     {
         return TagCreateRequest::make($this->connector, $this->entityType)->when(
             $tag !== null,
-            static fn(TagCreateRequest $request): TagCreateRequest => $request->tag($tag)
+            static fn (TagCreateRequest $request): TagCreateRequest => $request->tag($tag)
         );
     }
 
     public function update(?TagsContract $model = null): TagAttachRequest
     {
         return TagAttachRequest::make($this->connector, $this->entityType)
-            ->when($model !== null, static fn(TagAttachRequest $request): TagAttachRequest => $request->model($model));
+            ->when($model !== null, static fn (TagAttachRequest $request): TagAttachRequest => $request->model($model));
     }
 
     public function updateLead(LeadModel $model): TagAttachRequest

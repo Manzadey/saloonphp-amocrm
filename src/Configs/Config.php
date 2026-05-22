@@ -9,14 +9,13 @@ use Saloon\Traits\Makeable;
 class Config
 {
     use Makeable;
-    
+
     public function __construct(
         protected string $baseDomain,
         protected string $redirectUri,
         protected string $clientId,
         protected string $clientSecret,
-    )
-    {
+    ) {
     }
 
     /**
