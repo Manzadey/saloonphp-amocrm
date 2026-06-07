@@ -23,14 +23,13 @@
 
 ## 🔴 Блокеры (ломают сборку / CI)
 
-| # | Что | Где | Доказательство |
-|---|---|---|---|
-| B1 | **Падает тест** `testRequestId`. `requestId()` объявлен `array\|int\|null`, а `setRequestId(string)` пишет строку → `TypeError` | `src/Modules/Lead/LeadModel.php:47` | `Tests: 40, Errors: 1` |
-| B2 | `TagAttachRequest::model()` вызывает `TagsContract::all()`, но интерфейс этот метод не объявляет | `src/Modules/Tag/Requests/TagAttachRequest.php:37` | PHPStan L5: `method.notFound` |
-| B3 | `TaskModel::setEntity()` — `match` не покрывает все ветки `class-string<TaskContract>` (нет `default`) → `UnhandledMatchError` для неизвестной сущности | `src/Modules/Task/TaskModel.php:90` | PHPStan L5: `match.unhandled` |
+> **✅ Все B1–B3 исправлены в Фазе 0** (ветка `fix/audit-blockers`).
 
-Большинство ошибок PHPStan на level 5 — мелочь (`return static` vs `$this`), но
-B2/B3 — настоящие баги.
+| # | Что | Где | Статус |
+|---|---|---|---|
+| B1 | **Падает тест** `testRequestId`. `requestId()` объявлен `array\|int\|null`, а `setRequestId(string)` пишет строку → `TypeError` | `src/Modules/Lead/LeadModel.php` | ✅ `requestId(): ?string` |
+| B2 | `TagAttachRequest::model()` вызывает `TagsContract::all()`, но интерфейс этот метод не объявляет | `src/Modules/Tag/Requests/TagAttachRequest.php` | ✅ `all()` объявлен в `TagsContract` |
+| B3 | `TaskModel::setEntity()` — `match` не покрывает все ветки `class-string<TaskContract>` (нет `default`) → `UnhandledMatchError` для неизвестной сущности | `src/Modules/Task/TaskModel.php` | ✅ `default` → `InvalidArgumentException` + `TaskModelTest` |
 
 ---
 
@@ -62,23 +61,24 @@ B2/B3 — настоящие баги.
 
 ## 🟡 Инфраструктура качества
 
-- **AF3 (косметика):** в `AbstractFilter` докблоки `@return $this` при сигнатуре
-  `: static` дают шум PHPStan level 5 (`return.type`) — убрать избыточные `@return $this`;
-  уйдёт по ходу ратчета phpstan (см. спеку).
-- **Нет `phpstan.neon`** — анализ не зафиксирован, уровень не задан (12 ошибок даже
-  на L5 не отлавливаются в CI).
-- **Нет `phpunit.xml` / `.dist`** и **нет `autoload-dev`** в `composer.json` — тесты
-  запускаются «на удачу», классы тестов не автозагружаются штатно.
-- **Нет секции `scripts`** в composer (`composer test`, `composer stan`, `composer cs`).
-- **Нет CI-workflow** (`.github` / `.gitlab-ci.yml` отсутствуют).
-- **Покрытие тестами ~5 %**: 5 тест-файлов (Config, TokenConfig, MainConnector,
-  LeadModel, HasTags) на 95 классов. Не покрыты ни один Request/Response, ни фильтры,
-  ни Query-трейты — именно там и сидят баги L1–L7.
+> **Фаза 0 закрыла большинство пунктов** (ветка `fix/audit-blockers`).
+
+- ~~**AF3 (косметика):** докблоки `@return $this` при `: static`~~ — ✅ **исправлено**
+  (Фаза 0): избыточные `@return $this` убраны, src чист на PHPStan level 3.
+- ~~**Нет `phpstan.neon`**~~ — ✅ **добавлен** (`phpstan.neon`, level 3; ратчет до 9 по фазам).
+- ~~**Нет `phpunit.xml` / `.dist` и `autoload-dev`**~~ — ✅ **добавлены** (`phpunit.xml.dist`,
+  `autoload-dev: Manzadey\tests`).
+- ~~**Нет секции `scripts`**~~ — ✅ **добавлены** (`test` / `stan` / `cs` / `cs-fix`).
+- ~~**Нет CI-workflow**~~ — ✅ **добавлен** (`.github/workflows/ci.yml`, матрица PHP 8.1–8.4).
+- **Покрытие тестами** — пока низкое (Request/Response/фильтры/Query-трейты в основном
+  не покрыты). Поднимается по ходу Фаз 1–5 (TDD). Частично начато: `TaskModelTest`.
 - `composer.json`: ~~`"version": "0.1.0"` захардкожен~~ — **исправлено 2026-06-07**:
   поле `version` удалено, версия выводится из git-тегов (актуальный — `v0.4.0`).
   Остаётся: `"description": "description"` — плейсхолдер.
-- `amocrm/amocrm-api-library` в `require-dev`, но в коде не используется (мёртвая
-  dev-зависимость).
+- ~~`amocrm/amocrm-api-library` в `require-dev`, но в коде не используется (мёртвая
+  dev-зависимость)~~ — ✅ **удалена** (Фаза 0): её транзитивная `lcobucci/clock` не
+  поддерживала PHP 8.3/8.4 и ломала CI-матрицу; разбор сохранён в
+  [official-library-study.md](official-library-study.md).
 - Игнор 3 advisory saloon — это осознанное решение мейнтейнера (зафиксировано в
   памяти проекта), учтено как принятый риск, а не как находка.
 
