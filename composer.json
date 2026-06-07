@@ -1,6 +1,5 @@
 {
   "name": "manzadey/saloonphp-amocrm",
-  "version": "0.1.0",
   "description": "description",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -16,9 +15,8 @@
     "league/oauth2-client": "^2.4"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-latest",
-    "phpunit/phpunit": "^12.4",
-    "symfony/var-dumper": "^7.3",
+    "phpunit/phpunit": "^10.5",
+    "symfony/var-dumper": "^6.4",
     "friendsofphp/php-cs-fixer": "^3.95",
     "phpstan/phpstan": "^2.1",
     "amocrm/amocrm-api-library": "^1.15"
@@ -30,6 +28,13 @@
   },
   "config": {
     "allow-plugins": {
+    },
+    "audit": {
+      "ignore": {
+        "PKSA-xnj5-w74d-6wmz": "saloonphp/saloon 3.x advisory ignored by maintainer decision",
+        "PKSA-rnpm-45mg-w6ht": "saloonphp/saloon 3.x advisory ignored by maintainer decision",
+        "PKSA-5szq-gvrg-ttfq": "saloonphp/saloon 3.x advisory ignored by maintainer decision"
+      }
     }
   }
 }
