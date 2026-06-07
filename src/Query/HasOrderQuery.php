@@ -24,7 +24,7 @@ trait HasOrderQuery
 
     public function newest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
     {
-        return $this->order($field, QueryOrderEnum::ASC);
+        return $this->order($field, QueryOrderEnum::DESC);
     }
 
     public function latest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
