@@ -22,45 +22,35 @@ abstract class AbstractFilter extends ArrayStore
     }
 
     /**
-     * @param array<int>|int $id
-     * @return $this
-     */
+     * @param array<int>|int $id     */
     public function id(array|int $id): static
     {
         return $this->add('id', $id);
     }
 
     /**
-     * @param array<string>|string $name
-     * @return $this
-     */
+     * @param array<string>|string $name     */
     public function name(array|string $name): static
     {
         return $this->add('name', $name);
     }
 
     /**
-     * @param array<int>|int $createdBy
-     * @return $this
-     */
+     * @param array<int>|int $createdBy     */
     public function createdBy(array|int $createdBy): static
     {
         return $this->add('created_by', $createdBy);
     }
 
     /**
-     * @param array<int>|int $updatedBy
-     * @return $this
-     */
+     * @param array<int>|int $updatedBy     */
     public function updatedBy(array|int $updatedBy): static
     {
         return $this->add('updated_by', $updatedBy);
     }
 
     /**
-     * @param array<int>|int $responsibleUserId
-     * @return $this
-     */
+     * @param array<int>|int $responsibleUserId     */
     public function responsibleUserId(array|int $responsibleUserId): static
     {
         return $this->add('responsible_user_id', $responsibleUserId);
@@ -68,9 +58,7 @@ abstract class AbstractFilter extends ArrayStore
 
     /**
      * @param int|null $from
-     * @param int|null $to
-     * @return $this
-     */
+     * @param int|null $to     */
     public function createdAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('created_at', $from, $to);
@@ -78,9 +66,7 @@ abstract class AbstractFilter extends ArrayStore
 
     /**
      * @param int|null $from
-     * @param int|null $to
-     * @return $this
-     */
+     * @param int|null $to     */
     public function updatedAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('updated', $from, $to);
@@ -88,9 +74,7 @@ abstract class AbstractFilter extends ArrayStore
 
     /**
      * @param int|null $from
-     * @param int|null $to
-     * @return $this
-     */
+     * @param int|null $to     */
     public function closestTaskAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('closest_task_at', $from, $to);
