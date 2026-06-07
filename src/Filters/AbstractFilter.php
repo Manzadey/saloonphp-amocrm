@@ -13,7 +13,10 @@ abstract class AbstractFilter extends ArrayStore
 
     public function range(string $name, string|int|null $from = null, string|int|null $to = null): static
     {
-        return $this->add($name, array_filter(compact('from', 'to')));
+        return $this->add($name, array_filter(
+            compact('from', 'to'),
+            static fn (string|int|null $value): bool => $value !== null,
+        ));
     }
 
     public function customFieldsValues(array $fields): static

@@ -22,4 +22,18 @@ class AbstractFilterTest extends TestCase
         self::assertSame(['from' => 100, 'to' => 200], $filter->get('updated_at'));
         self::assertNull($filter->get('updated'));
     }
+
+    public function testRangeKeepsZeroBound(): void
+    {
+        $filter = $this->filter()->createdAt(0, 200);
+
+        self::assertSame(['from' => 0, 'to' => 200], $filter->get('created_at'));
+    }
+
+    public function testRangeDropsNullBound(): void
+    {
+        $filter = $this->filter()->createdAt(100, null);
+
+        self::assertSame(['from' => 100], $filter->get('created_at'));
+    }
 }
