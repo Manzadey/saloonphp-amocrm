@@ -49,18 +49,14 @@ class NoteListRequest extends Request
     }
 
     /**
-     * @param array<int>|int $id
-     * @return $this
-     */
+     * @param array<int>|int $id     */
     public function filterId(array|int $id): static
     {
         return $this->filter('id', $id);
     }
 
     /**
-     * @param array<int> $ids
-     * @return $this
-     */
+     * @param array<int> $ids     */
     public function filterEntityId(array $ids): static
     {
         return $this->filter('entity_id', $ids);

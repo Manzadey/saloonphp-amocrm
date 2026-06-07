@@ -89,6 +89,9 @@ class TaskModel extends Model
     {
         $type = match (get_class($model)) {
             LeadModel::class => 'leads',
+            default => throw new InvalidArgumentException(
+                sprintf('Unsupported entity model for task: %s', get_class($model))
+            ),
         };
 
         return $this->setEntityType($type)->setEntityId($model->id());

@@ -10,9 +10,7 @@ class LeadFilter extends AbstractFilter
 {
     /**
      * @param int $priceFrom
-     * @param int|null $priceTo
-     * @return $this
-     */
+     * @param int|null $priceTo     */
     public function price(int $priceFrom, ?int $priceTo = null): static
     {
         return $this->range('price', $priceFrom, $priceTo);
@@ -46,9 +44,7 @@ class LeadFilter extends AbstractFilter
     }
 
     /**
-     * @param array<int>|int $pipeline
-     * @return $this
-     */
+     * @param array<int>|int $pipeline     */
     public function pipelineId(array|int $pipeline): static
     {
         return $this->add('pipeline_id', $pipeline);
@@ -56,9 +52,7 @@ class LeadFilter extends AbstractFilter
 
     /**
      * @param int|null $from
-     * @param int|null $to
-     * @return $this
-     */
+     * @param int|null $to     */
     public function closedAt(?int $from = null, ?int $to = null): static
     {
         return $this->range('closed_at', $from, $to);
