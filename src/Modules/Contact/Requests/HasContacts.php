@@ -26,18 +26,17 @@ trait HasContacts
      */
     public function setContacts(array $contacts): static
     {
-        return $this->add(
-            key: '_embedded',
-            value: array_merge_recursive($this->get('_embedded', []), [
-                'contacts' => array_map(
-                    callback: static fn (ContactModel|array $value): array => array_intersect_key(
-                        ($value instanceof ContactModel ? $value->all() : $value),
-                        array_flip(['id', 'is_main'])
-                    ),
-                    array: $contacts
-                )
-            ])
+        $embedded = $this->get('_embedded', []);
+
+        $embedded['contacts'] = array_map(
+            static fn (ContactModel|array $value): array => array_intersect_key(
+                ($value instanceof ContactModel ? $value->all() : $value),
+                array_flip(['id', 'is_main'])
+            ),
+            $contacts,
         );
+
+        return $this->add('_embedded', $embedded);
     }
 
     public function addContact(ContactModel|array $contact): static
