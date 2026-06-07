@@ -82,4 +82,17 @@ class ModelHasTagsTraitTest extends TestCase
         $this->assertIsArray($tagsToAdd);
         $this->assertCount(1, $tagsToAdd);
     }
+
+    public function testAppendToTagsToAddKeepsPreviousTags(): void
+    {
+        $this->classWithTrait->appendToTagsToAdd(new TagModel(['name' => 'tag_one']));
+        $this->classWithTrait->appendToTagsToAdd(new TagModel(['name' => 'tag_two']));
+
+        $names = array_map(
+            static fn (TagModel $tag): ?string => $tag->name(),
+            $this->classWithTrait->tagsToAdd(),
+        );
+
+        self::assertSame(['tag_one', 'tag_two'], $names);
+    }
 }
