@@ -69,7 +69,7 @@ abstract class AbstractFilter extends ArrayStore
      * @param int|null $to     */
     public function updatedAt(?int $from = null, ?int $to = null): static
     {
-        return $this->range('updated', $from, $to);
+        return $this->range('updated_at', $from, $to);
     }
 
     /**
