@@ -10,14 +10,13 @@
     }
   ],
   "require": {
-    "php": "^8.1",
-    "saloonphp/saloon": "^3.10",
+    "php": "^8.2",
+    "saloonphp/saloon": "^4.0",
     "league/oauth2-client": "^2.4"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.5",
-    "symfony/var-dumper": "^6.4",
-    "friendsofphp/php-cs-fixer": "^3.95",
+    "symfony/var-dumper": "^7.0",
     "phpstan/phpstan": "^2.1"
   },
   "autoload": {
@@ -32,19 +31,10 @@
   },
   "scripts": {
     "test": "phpunit",
-    "stan": "phpstan analyse",
-    "cs": "php-cs-fixer fix --dry-run --diff",
-    "cs-fix": "php-cs-fixer fix"
+    "stan": "phpstan analyse"
   },
   "config": {
     "allow-plugins": {
-    },
-    "audit": {
-      "ignore": {
-        "PKSA-xnj5-w74d-6wmz": "saloonphp/saloon 3.x advisory ignored by maintainer decision",
-        "PKSA-rnpm-45mg-w6ht": "saloonphp/saloon 3.x advisory ignored by maintainer decision",
-        "PKSA-5szq-gvrg-ttfq": "saloonphp/saloon 3.x advisory ignored by maintainer decision"
-      }
     }
   }
 }
