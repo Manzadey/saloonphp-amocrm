@@ -39,9 +39,7 @@ class TagListRequest extends Request
     }
 
     /**
-     * @param array<int>|int $id
-     * @return $this
-     */
+     * @param array<int>|int $id     */
     public function filterId(array|int $id): static
     {
         return $this->filter('id', $id);

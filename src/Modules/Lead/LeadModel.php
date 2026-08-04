@@ -40,9 +40,9 @@ class LeadModel extends Model implements TagsContract, TaskContract, CustomField
     }
 
     /**
-     * @return int|array|null Строка переданная при запросе или порядковый указатель, если параметр не передан
+     * @return string|null Строка, переданная при запросе (request_id), либо null, если параметр не передан
      */
-    public function requestId(): int|array|null
+    public function requestId(): ?string
     {
         return $this->get('request_id');
     }
