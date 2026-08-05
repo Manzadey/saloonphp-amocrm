@@ -6,12 +6,14 @@ namespace Manzadey\SaloonAmoCrm\Modules\Note\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Note\Responses\NoteItemResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Http\Response;
 
 class NoteItemRequest extends Request
 {
+    use SendsTypedResponse;
+
     protected Method $method = Method::GET;
 
     protected ?string $response = NoteItemResponse::class;
@@ -41,8 +43,8 @@ class NoteItemRequest extends Request
         return implode('/', $path);
     }
 
-    public function send(): Response|NoteItemResponse
+    public function send(): NoteItemResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(NoteItemResponse::class);
     }
 }

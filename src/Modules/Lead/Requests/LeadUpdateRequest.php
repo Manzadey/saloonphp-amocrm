@@ -6,13 +6,14 @@ namespace Manzadey\SaloonAmoCrm\Modules\Lead\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Lead\Responses\LeadUpdateResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 
 class LeadUpdateRequest extends AbstractLeadRequest implements HasBody
 {
+    use SendsTypedResponse;
     use HasJsonBody;
 
     protected Method $method = Method::PATCH;
@@ -36,12 +37,11 @@ class LeadUpdateRequest extends AbstractLeadRequest implements HasBody
     }
 
     /**
-     * @return Response|LeadUpdateResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|LeadUpdateResponse
+    public function send(): LeadUpdateResponse
     {
-        return parent::send();
+        return $this->sendTyped(LeadUpdateResponse::class);
     }
 }

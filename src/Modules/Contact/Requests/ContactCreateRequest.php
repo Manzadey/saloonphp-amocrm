@@ -6,13 +6,14 @@ namespace Manzadey\SaloonAmoCrm\Modules\Contact\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Contact\ContactModel;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Responses\ContactCreateResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 
 class ContactCreateRequest extends AbstractContactRequest implements HasBody
 {
+    use SendsTypedResponse;
     use HasJsonBody;
 
     protected Method $method = Method::POST;
@@ -31,12 +32,11 @@ class ContactCreateRequest extends AbstractContactRequest implements HasBody
     }
 
     /**
-     * @return Response|ContactCreateResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function save(): Response|ContactCreateResponse
+    public function save(): ContactCreateResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(ContactCreateResponse::class);
     }
 }

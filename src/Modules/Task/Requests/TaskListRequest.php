@@ -6,11 +6,12 @@ namespace Manzadey\SaloonAmoCrm\Modules\Task\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Task\Responses\TaskListResponse;
 use Manzadey\SaloonAmoCrm\Query;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class TaskListRequest extends AbstractTaskRequest
 {
+    use SendsTypedResponse;
     use Query\HasOrderQuery;
     use Query\HasFilterQuery;
     use Query\HasPageQuery;
@@ -21,12 +22,11 @@ class TaskListRequest extends AbstractTaskRequest
     protected ?string $response = TaskListResponse::class;
 
     /**
-     * @return Response|TaskListResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|TaskListResponse
+    public function send(): TaskListResponse
     {
-        return parent::send();
+        return $this->sendTyped(TaskListResponse::class);
     }
 }

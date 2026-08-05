@@ -6,11 +6,12 @@ namespace Manzadey\SaloonAmoCrm\Modules\Contact\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Contact\Responses\ContactListResponse;
 use Manzadey\SaloonAmoCrm\Query;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class ContactListRequest extends AbstractContactRequest
 {
+    use SendsTypedResponse;
     use HasContactWithQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
@@ -22,8 +23,8 @@ class ContactListRequest extends AbstractContactRequest
 
     protected ?string $response = ContactListResponse::class;
 
-    public function send(): Response|ContactListResponse
+    public function send(): ContactListResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(ContactListResponse::class);
     }
 }
