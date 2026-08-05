@@ -6,13 +6,14 @@ namespace Manzadey\SaloonAmoCrm\Modules\Task\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Task\Responses\TaskCreateResponse;
 use Manzadey\SaloonAmoCrm\Modules\Task\TaskModel;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 
 class TaskCreateRequest extends AbstractTaskRequest implements HasBody
 {
+    use SendsTypedResponse;
     use HasJsonBody;
 
     protected Method $method = Method::POST;
@@ -32,8 +33,8 @@ class TaskCreateRequest extends AbstractTaskRequest implements HasBody
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|TaskCreateResponse
+    public function send(): TaskCreateResponse
     {
-        return parent::send();
+        return $this->sendTyped(TaskCreateResponse::class);
     }
 }

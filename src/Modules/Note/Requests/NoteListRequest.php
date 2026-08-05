@@ -8,12 +8,13 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Note\NoteTypeEnum;
 use Manzadey\SaloonAmoCrm\Modules\Note\Responses\NoteListResponse;
 use Manzadey\SaloonAmoCrm\Query;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Http\Response;
 
 class NoteListRequest extends Request
 {
+    use SendsTypedResponse;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
     use Query\HasFilterQuery;
@@ -43,9 +44,9 @@ class NoteListRequest extends Request
         return implode('/', $path);
     }
 
-    public function send(): Response|NoteListResponse
+    public function send(): NoteListResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(NoteListResponse::class);
     }
 
     /**

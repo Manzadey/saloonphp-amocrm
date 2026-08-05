@@ -6,11 +6,12 @@ namespace Manzadey\SaloonAmoCrm\Modules\Lead\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Lead\Responses\LeadItemResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class LeadItemRequest extends AbstractLeadRequest
 {
+    use SendsTypedResponse;
     use Traits\HasLeadWithQuery;
 
     protected Method $method = Method::GET;
@@ -40,12 +41,11 @@ class LeadItemRequest extends AbstractLeadRequest
     }
 
     /**
-     * @return Response|LeadItemResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|LeadItemResponse
+    public function send(): LeadItemResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(LeadItemResponse::class);
     }
 }

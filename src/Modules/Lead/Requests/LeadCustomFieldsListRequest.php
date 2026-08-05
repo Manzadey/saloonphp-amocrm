@@ -9,11 +9,12 @@ use Manzadey\SaloonAmoCrm\Query\HasFilterQuery;
 use Manzadey\SaloonAmoCrm\Query\HasLimitQuery;
 use Manzadey\SaloonAmoCrm\Query\HasOrderQuery;
 use Manzadey\SaloonAmoCrm\Query\HasPageQuery;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class LeadCustomFieldsListRequest extends AbstractLeadRequest
 {
+    use SendsTypedResponse;
     use HasPageQuery;
     use HasLimitQuery;
     use HasOrderQuery;
@@ -26,12 +27,11 @@ class LeadCustomFieldsListRequest extends AbstractLeadRequest
     protected string $endpoint = '/leads/custom_fields';
 
     /**
-     * @return Response|LeadCustomFieldsListResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|LeadCustomFieldsListResponse
+    public function send(): LeadCustomFieldsListResponse
     {
-        return parent::send();
+        return $this->sendTyped(LeadCustomFieldsListResponse::class);
     }
 }

@@ -6,11 +6,13 @@ namespace Manzadey\SaloonAmoCrm\Modules\User\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\User\Responses\UserItemResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class UserItemRequest extends AbstractUserRequest
 {
+    use SendsTypedResponse;
+
     protected Method $method = Method::GET;
 
     protected ?string $response = UserItemResponse::class;
@@ -34,8 +36,8 @@ class UserItemRequest extends AbstractUserRequest
         return $this;
     }
 
-    public function send(): Response|UserItemResponse
+    public function send(): UserItemResponse
     {
-        return parent::send();
+        return $this->sendTyped(UserItemResponse::class);
     }
 }
