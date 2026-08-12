@@ -159,4 +159,9 @@ class Client
     {
         return new Modules\User\UserReference($this->connector);
     }
+
+    public function pipelines(): Modules\Pipeline\PipelineReference
+    {
+        return new Modules\Pipeline\PipelineReference($this->connector());
+    }
 }
