@@ -164,4 +164,9 @@ class Client
     {
         return new Modules\Pipeline\PipelineReference($this->connector());
     }
+
+    public function webhooks(): Modules\Webhook\WebhookReference
+    {
+        return new Modules\Webhook\WebhookReference($this->connector());
+    }
 }
