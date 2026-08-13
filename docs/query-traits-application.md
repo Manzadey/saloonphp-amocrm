@@ -13,11 +13,12 @@
 | `HasLimitQuery` | `limit(int)` | `limit` |
 | `HasSearchQuery` | `querySearch(string\|int)` | `query` (поиск) |
 | `HasFilterQuery` | `filter(key, value)` | `filter[...]` |
-| `HasOrderQuery` | `order()`, `newest()`, `latest()`, `removeOrder()` | `order[...]` |
+| `HasOrderQuery` | `order()`, `latest()`, `oldest()`, `removeOrder()` | `order[...]` |
 | `HasWithQuery` | `with(array)`, `addWith(string)` | `with` |
 
-> Связанные находки аудита: L6 (`filter` аккумулирует скаляры), L7 (`newest/latest`
-> инвертированы), L8 (`QueryOrderFieldEnum::SORT` невалиден), `with` (5 реализаций).
+> Связанные находки аудита: L6 (`filter` аккумулирует скаляры), L7 (`newest()` был
+> инвертирован — удалён в пользу `latest()`/`oldest()`), L8 (`QueryOrderFieldEnum::SORT`
+> невалиден), `with` (5 реализаций).
 > См. [audit.md](audit.md).
 
 ---
