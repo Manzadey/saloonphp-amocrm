@@ -19,7 +19,7 @@ class TaskReference
         $request = new Requests\TaskListRequest($this->connector);
 
         if ($this->entityType !== null) {
-            $request->filter('entity_type', $this->entityType);
+            $request->addFilter(TaskFilter::make()->entityType($this->entityType));
         }
 
         return $request;

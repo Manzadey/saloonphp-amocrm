@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\CustomField\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
+use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldFilter;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Responses\CustomFieldsListResponse;
 use Manzadey\SaloonAmoCrm\Query;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
@@ -16,6 +17,7 @@ class CustomFieldListRequest extends Request
     use SendsTypedResponse;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
+    /** @use Query\HasFilterQuery<CustomFieldFilter> */
     use Query\HasFilterQuery;
     use Traits\HasCustomFieldOrderQuery;
 

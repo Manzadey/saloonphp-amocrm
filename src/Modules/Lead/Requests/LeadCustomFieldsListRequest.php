@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Lead\Requests;
 
+use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldFilter;
+use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\Traits\HasCustomFieldOrderQuery;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Responses\CustomFieldsListResponse;
 use Manzadey\SaloonAmoCrm\Query\HasFilterQuery;
 use Manzadey\SaloonAmoCrm\Query\HasLimitQuery;
-use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\Traits\HasCustomFieldOrderQuery;
 use Manzadey\SaloonAmoCrm\Query\HasPageQuery;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
@@ -18,6 +19,7 @@ class LeadCustomFieldsListRequest extends AbstractLeadRequest
     use HasPageQuery;
     use HasLimitQuery;
     use HasCustomFieldOrderQuery;
+    /** @use HasFilterQuery<CustomFieldFilter> */
     use HasFilterQuery;
 
     protected Method $method = Method::GET;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Tag\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
+use Manzadey\SaloonAmoCrm\Modules\Tag\TagFilter;
 use Manzadey\SaloonAmoCrm\Query;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -14,6 +15,7 @@ class TagListRequest extends Request
 {
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
+    /** @use Query\HasFilterQuery<TagFilter> */
     use Query\HasFilterQuery;
     use Query\HasSearchQuery;
 
@@ -31,18 +33,6 @@ class TagListRequest extends Request
     public function resolveEndpoint(): string
     {
         return "/$this->entityType/tags";
-    }
-
-    public function filterName(string $name): static
-    {
-        return $this->filter('name', $name);
-    }
-
-    /**
-     * @param array<int>|int $id     */
-    public function filterId(array|int $id): static
-    {
-        return $this->filter('id', $id);
     }
 
     public function send(): Response

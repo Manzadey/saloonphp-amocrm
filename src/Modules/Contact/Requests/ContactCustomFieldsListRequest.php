@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Contact\Requests;
 
+use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldFilter;
+use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\Traits\HasCustomFieldOrderQuery;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Responses\CustomFieldsListResponse;
 use Manzadey\SaloonAmoCrm\Query;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
@@ -14,8 +16,9 @@ class ContactCustomFieldsListRequest extends AbstractContactRequest
     use SendsTypedResponse;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
+    /** @use Query\HasFilterQuery<CustomFieldFilter> */
     use Query\HasFilterQuery;
-    use \Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\Traits\HasCustomFieldOrderQuery;
+    use HasCustomFieldOrderQuery;
 
     protected Method $method = Method::GET;
 
