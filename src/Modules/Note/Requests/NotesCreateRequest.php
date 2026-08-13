@@ -9,14 +9,15 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Note\CommonNoteModel;
 use Manzadey\SaloonAmoCrm\Modules\Note\NoteModel;
 use Manzadey\SaloonAmoCrm\Modules\Note\Responses\NoteCreateResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 
 class NotesCreateRequest extends Request implements HasBody
 {
+    use SendsTypedResponse;
     use HasJsonBody;
 
     protected Method $method = Method::POST;
@@ -71,8 +72,8 @@ class NotesCreateRequest extends Request implements HasBody
         );
     }
 
-    public function send(): Response|NoteCreateResponse
+    public function send(): NoteCreateResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(NoteCreateResponse::class);
     }
 }

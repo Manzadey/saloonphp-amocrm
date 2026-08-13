@@ -6,12 +6,16 @@ namespace Manzadey\SaloonAmoCrm\Modules\Task\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Task\Responses\TaskItemResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class TaskItemRequest extends AbstractTaskRequest
 {
+    use SendsTypedResponse;
+
     protected Method $method = Method::GET;
+
+    protected ?string $response = TaskItemResponse::class;
 
     public function __construct(
         protected MainConnector $connector,
@@ -32,8 +36,8 @@ class TaskItemRequest extends AbstractTaskRequest
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|TaskItemResponse
+    public function send(): TaskItemResponse
     {
-        return parent::send();
+        return $this->sendTyped(TaskItemResponse::class);
     }
 }

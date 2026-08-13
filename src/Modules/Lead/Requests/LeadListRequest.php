@@ -7,11 +7,12 @@ namespace Manzadey\SaloonAmoCrm\Modules\Lead\Requests;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadFilter;
 use Manzadey\SaloonAmoCrm\Modules\Lead\Responses\LeadListResponse;
 use Manzadey\SaloonAmoCrm\Query;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 
 class LeadListRequest extends AbstractLeadRequest
 {
+    use SendsTypedResponse;
     use Query\HasOrderQuery;
     use Query\HasSearchQuery;
     use Traits\HasLeadWithQuery;
@@ -33,12 +34,11 @@ class LeadListRequest extends AbstractLeadRequest
     }
 
     /**
-     * @return Response|LeadListResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|LeadListResponse
+    public function send(): LeadListResponse
     {
-        return parent::send();
+        return $this->sendTyped(LeadListResponse::class);
     }
 }

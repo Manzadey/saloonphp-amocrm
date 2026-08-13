@@ -8,9 +8,16 @@ use Manzadey\SaloonAmoCrm\Modules\Model;
 
 class CustomFieldModel extends Model
 {
+    /**
+     * The `field_id`/`field_name`/`field_code`/`field_type` keys are how a
+     * custom field looks *inside* an entity's `custom_fields_values`. The
+     * `/{entity}/custom_fields` reference endpoint returns the same field as
+     * a standalone object with plain `id`/`name`/`code`/`type` keys. Reading
+     * both keeps the model usable for both shapes.
+     */
     public function id(): ?int
     {
-        return $this->get('field_id');
+        return $this->get('field_id') ?? $this->get('id');
     }
 
     public function setId(int $id): static
@@ -20,12 +27,12 @@ class CustomFieldModel extends Model
 
     public function name(): ?string
     {
-        return $this->get('field_name');
+        return $this->get('field_name') ?? $this->get('name');
     }
 
     public function code(): ?string
     {
-        return $this->get('field_code');
+        return $this->get('field_code') ?? $this->get('code');
     }
 
     public function setCode(string $code): static
@@ -35,7 +42,7 @@ class CustomFieldModel extends Model
 
     public function type(): ?string
     {
-        return $this->get('field_type');
+        return $this->get('field_type') ?? $this->get('type');
     }
 
     public function accountId(): int

@@ -7,12 +7,14 @@ namespace Manzadey\SaloonAmoCrm\Modules\Account\Requests;
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Account\AccountWithQueryEnum;
 use Manzadey\SaloonAmoCrm\Modules\Account\Responses\AccountResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Http\Response;
 
 class AccountRequest extends Request
 {
+    use SendsTypedResponse;
+
     protected Method $method = Method::GET;
 
     protected ?string $response = AccountResponse::class;
@@ -66,8 +68,8 @@ class AccountRequest extends Request
         return $this;
     }
 
-    public function send(): Response|AccountResponse
+    public function send(): AccountResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(AccountResponse::class);
     }
 }

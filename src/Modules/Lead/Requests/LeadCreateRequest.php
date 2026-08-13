@@ -6,13 +6,14 @@ namespace Manzadey\SaloonAmoCrm\Modules\Lead\Requests;
 
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Lead\Responses\LeadAddResponse;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
-use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 
 class LeadCreateRequest extends AbstractLeadRequest implements HasBody
 {
+    use SendsTypedResponse;
     use HasJsonBody;
 
     protected Method $method = Method::POST;
@@ -31,12 +32,11 @@ class LeadCreateRequest extends AbstractLeadRequest implements HasBody
     }
 
     /**
-     * @return Response|LeadAddResponse
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): Response|LeadAddResponse
+    public function send(): LeadAddResponse
     {
-        return parent::send();
+        return $this->sendTyped(LeadAddResponse::class);
     }
 }
