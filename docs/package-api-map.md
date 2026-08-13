@@ -18,7 +18,7 @@ Client
 вызывается ленивым `getAuth()` при первом запросе и при истечении токена.
 
 Точки входа: `account()`, `leads()`, `contacts()`, `tasks()`, `users()`,
-`oAuth2()`.
+`pipelines()`, `webhooks()`, `oAuth2()`.
 
 ---
 
@@ -60,7 +60,7 @@ Client
 | `item($id)` | `LeadItemRequest` | GET | `/leads/{id}` | with, `limit=1` | `LeadItemResponse` |
 | `create(?LeadModel)` | `LeadCreateRequest` | POST | `/leads` | body: массив сделок (`add()`) | `LeadAddResponse` |
 | `update()` | `LeadUpdateRequest` | PATCH | `/leads` | body: `addLead()`/`addLeads()` | `LeadUpdateResponse` (пустой) |
-| `customFields()` | `LeadCustomFieldsListRequest` | GET | `/leads/custom_fields` | order, filter, page, limit | `LeadCustomFieldsListResponse` |
+| `customFields()` | `LeadCustomFieldsListRequest` | GET | `/leads/custom_fields` | order, filter, page, limit | `CustomFieldsListResponse` |
 | `notes()` | → `NoteReferences('leads')` | | | | см. §6 |
 | `tags()` | → `TagReference('leads')` | | | | см. §8 |
 
@@ -80,7 +80,7 @@ Client
 
 **Responses:** `LeadListResponse` → `leads()`, `lead()`, `isEmpty/isNotEmpty()`
 + `page()`, `*PageUrl()`. `LeadAddResponse` → `leads()`, `lead()`.
-`LeadItemResponse` → `lead()`. `LeadCustomFieldsListResponse` → `fields()`.
+`LeadItemResponse` → `lead()`. `CustomFieldsListResponse` → `fields()`.
 
 ---
 
@@ -91,7 +91,7 @@ Client
 | `list()` | `ContactListRequest` | GET | `/contacts` | with, page, limit, search, filter, order | `ContactListResponse` |
 | `search($q)` | `ContactListRequest` | GET | `/contacts` | `query=$q` | `ContactListResponse` |
 | `create(?ContactModel)` | `ContactCreateRequest` | POST | `/contacts` | body: `add()` → `save()` | `ContactCreateResponse` |
-| `customFields()` | `ContactCustomFieldsListRequest` | GET | `/contacts/custom_fields` | — | `Saloon\Response` |
+| `customFields()` | `ContactCustomFieldsListRequest` | GET | `/contacts/custom_fields` | order, filter, page, limit | `CustomFieldsListResponse` |
 
 **`with` контакта** (`HasContactWithQuery`): `withCatalogElements`, `withLeads`,
 `withCustomers`.
@@ -103,6 +103,7 @@ Client
 
 **Responses:** `ContactListResponse` → `contacts()`, `isEmpty/isNotEmpty()`,
 page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
+`CustomFieldsListResponse` → `fields()`.
 
 ---
 
@@ -158,11 +159,16 @@ page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
 
 | Ref-метод | Request | Method | Endpoint | Параметры | Response |
 |---|---|---|---|---|---|
-| `list()` | `UserListRequest` | GET | `/users` | — | `Saloon\Response` |
-| `item($id)` | `UserItemRequest` | GET | `/users/{id}` | `with` (csv через `with(array)`) | `UserItemResponse` |
+| `list()` | `UserListRequest` | GET | `/users` | page, limit, with | `UserListResponse` |
+| `item($id)` | `UserItemRequest` | GET | `/users/{id}` | with | `UserItemResponse` |
+
+**`with` пользователя** (`HasUserWithQuery`): `withRole`, `withGroup`, `withUuid`,
+`withAmojoId`, `withUserRank`, `withPhoneNumber` — поверх общего `HasWithQuery`
+(`with(array)` / `addWith(string)`, склейка в csv).
 
 **`UserModel`:** `setId`, `setName`, `setEmail`, `setLang`, `setRights(array)`.
-Response: `user()`.
+Read: `name` (строка). Responses: `UserListResponse` → `users()`,
+`isEmpty/isNotEmpty()`, page/links. `UserItemResponse` → `user()`.
 
 ---
 
@@ -195,14 +201,60 @@ Response: `user()`.
 `date`, `url`, `price`, `monetary`, `file`, `linked_entity`, `chained_list` и др.).
 
 **`CustomFieldModel`:** `setId`, `setCode`, `setValues(array)`, `addValue()`.
-Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`.
+Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
+`code`/`type` читают и формат `custom_fields_values` (`field_id`/`field_name`/
+`field_code`/`field_type`), и формат справочника `/{entity}/custom_fields`
+(`id`/`name`/`code`/`type`) — второй в приоритете, если оба ключа отсутствуют
+в первом.
 
 **Трейт `HasCustomFieldsValues`:** `customFieldsValues()`,
 `setCustomFieldsValues()`, `addCustomFieldsValue()`.
 
 ---
 
-## 10. Общие query-трейты, фильтры, enum
+## 10. Pipelines — `$client->pipelines()`
+
+| Ref-метод | Request | Method | Endpoint | Response |
+|---|---|---|---|---|
+| `list()` | `PipelineListRequest` | GET | `/leads/pipelines` | `PipelineListResponse` |
+
+Пустой аккаунт отдаёт **204 без тела**; `json()` Saloon сам подставляет `[]`
+для пустого тела, поэтому `pipelines()` просто возвращает пустой массив.
+
+**`PipelineModel`:** `id`, `name`, `sort`, `isMain`, `isUnsortedOn`,
+`isArchive`, `accountId`, `statuses()` → `array<PipelineStatusModel>` из
+`_embedded.statuses`.
+
+**`PipelineStatusModel`** (`Modules\Pipeline\Status`): `id`, `name`, `sort`,
+`isEditable`, `pipelineId`, `color`, `type`, `accountId`.
+
+**Response:** `PipelineListResponse` → `pipelines()`, `isEmpty/isNotEmpty()`.
+
+---
+
+## 11. Webhooks — `$client->webhooks()`
+
+| Ref-метод | Request | Method | Endpoint | Тело | Response |
+|---|---|---|---|---|---|
+| `list()` | `WebhookListRequest` | GET | `/webhooks` | — | `WebhookListResponse` |
+| `subscribe($destination, $settings)` | `WebhookSubscribeRequest` | POST | `/webhooks` | `destination`, `settings` | `WebhookResponse` |
+| `unsubscribe($destination)` | `WebhookUnsubscribeRequest` | DELETE | `/webhooks` | `destination` | `WebhookUnsubscribeResponse` (пустой) |
+
+Подписка на уже существующий `destination` **обновляет** хук, а не дублирует
+его. Аккаунт без подписок отдаёт **204 без тела** — как и у pipelines, лишней
+обработки не требуется.
+
+**`WebhookModel`:** `id`, `accountId`, `destination`/`setDestination`,
+`settings`/`setSettings(array)`, `sort`, `createdBy`, `createdAt`, `updatedAt`,
+`isDisabled` (`true`, когда amoCRM сам отключил хук после серии неудачных
+доставок).
+
+**Responses:** `WebhookListResponse` → `webhooks()`, `isEmpty/isNotEmpty()`.
+`WebhookResponse` → `webhook()`.
+
+---
+
+## 12. Общие query-трейты, фильтры, enum
 
 **Query-трейты** (`src/Query`):
 
@@ -238,11 +290,13 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`.
 | Users | ✅ | ✅ | ❌ | ❌ | — | — | — |
 | Account | — | ✅ | — | — | — | — | — |
 | Tags | ✅ | ❌ | ✅ | ✅ (attach) | — | — | — |
+| Pipelines | ✅ | — | — | — | — | — | — |
+| Webhooks | ✅ | — | ✅ (subscribe) | — | — | — | — |
 
 ¹ `NoteReferences`/`TagReference` универсальны по `entityType`, но в
 `ContactReference` не проброшены — доступны только через `LeadReference`.
 
 **Заметные пробелы:** нет item/update у Contacts, нет update у Tasks/Notes,
-нет delete нигде, нет companies/pipelines/catalogs/events. Все
-«нетипизированные» запросы (Contacts customFields, Users list, все
-Tag-запросы) возвращают сырой `Saloon\Response` без модели-обёртки.
+нет delete нигде, нет companies/catalogs/events. Все «нетипизированные»
+запросы (все Tag-запросы) возвращают сырой `Saloon\Response` без
+модели-обёртки.
