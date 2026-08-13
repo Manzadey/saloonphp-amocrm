@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Contact\Requests;
 
-use Manzadey\SaloonAmoCrm\Modules\Contact\Responses\ContactCustomFieldsListResponse;
+use Manzadey\SaloonAmoCrm\Modules\CustomField\Responses\CustomFieldsListResponse;
 use Manzadey\SaloonAmoCrm\Query;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
@@ -19,7 +19,7 @@ class ContactCustomFieldsListRequest extends AbstractContactRequest
 
     protected Method $method = Method::GET;
 
-    protected ?string $response = ContactCustomFieldsListResponse::class;
+    protected ?string $response = CustomFieldsListResponse::class;
 
     protected string $endpoint = '/contacts/custom_fields';
 
@@ -27,8 +27,8 @@ class ContactCustomFieldsListRequest extends AbstractContactRequest
      * @throws \Saloon\Exceptions\Request\FatalRequestException
      * @throws \Saloon\Exceptions\Request\RequestException
      */
-    public function send(): ContactCustomFieldsListResponse
+    public function send(): CustomFieldsListResponse
     {
-        return $this->sendTyped(ContactCustomFieldsListResponse::class);
+        return $this->sendTyped(CustomFieldsListResponse::class);
     }
 }

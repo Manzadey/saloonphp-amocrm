@@ -60,7 +60,7 @@ Client
 | `item($id)` | `LeadItemRequest` | GET | `/leads/{id}` | with, `limit=1` | `LeadItemResponse` |
 | `create(?LeadModel)` | `LeadCreateRequest` | POST | `/leads` | body: массив сделок (`add()`) | `LeadAddResponse` |
 | `update()` | `LeadUpdateRequest` | PATCH | `/leads` | body: `addLead()`/`addLeads()` | `LeadUpdateResponse` (пустой) |
-| `customFields()` | `LeadCustomFieldsListRequest` | GET | `/leads/custom_fields` | order, filter, page, limit | `LeadCustomFieldsListResponse` |
+| `customFields()` | `LeadCustomFieldsListRequest` | GET | `/leads/custom_fields` | order, filter, page, limit | `CustomFieldsListResponse` |
 | `notes()` | → `NoteReferences('leads')` | | | | см. §6 |
 | `tags()` | → `TagReference('leads')` | | | | см. §8 |
 
@@ -80,7 +80,7 @@ Client
 
 **Responses:** `LeadListResponse` → `leads()`, `lead()`, `isEmpty/isNotEmpty()`
 + `page()`, `*PageUrl()`. `LeadAddResponse` → `leads()`, `lead()`.
-`LeadItemResponse` → `lead()`. `LeadCustomFieldsListResponse` → `fields()`.
+`LeadItemResponse` → `lead()`. `CustomFieldsListResponse` → `fields()`.
 
 ---
 
@@ -91,7 +91,7 @@ Client
 | `list()` | `ContactListRequest` | GET | `/contacts` | with, page, limit, search, filter, order | `ContactListResponse` |
 | `search($q)` | `ContactListRequest` | GET | `/contacts` | `query=$q` | `ContactListResponse` |
 | `create(?ContactModel)` | `ContactCreateRequest` | POST | `/contacts` | body: `add()` → `save()` | `ContactCreateResponse` |
-| `customFields()` | `ContactCustomFieldsListRequest` | GET | `/contacts/custom_fields` | order, filter, page, limit | `ContactCustomFieldsListResponse` |
+| `customFields()` | `ContactCustomFieldsListRequest` | GET | `/contacts/custom_fields` | order, filter, page, limit | `CustomFieldsListResponse` |
 
 **`with` контакта** (`HasContactWithQuery`): `withCatalogElements`, `withLeads`,
 `withCustomers`.
@@ -103,7 +103,7 @@ Client
 
 **Responses:** `ContactListResponse` → `contacts()`, `isEmpty/isNotEmpty()`,
 page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
-`ContactCustomFieldsListResponse` → `fields()`.
+`CustomFieldsListResponse` → `fields()`.
 
 ---
 

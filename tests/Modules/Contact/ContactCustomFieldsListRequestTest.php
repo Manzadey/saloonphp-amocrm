@@ -7,7 +7,7 @@ namespace Manzadey\tests\Modules\Contact;
 use DateTimeImmutable;
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\ContactCustomFieldsListRequest;
-use Manzadey\SaloonAmoCrm\Modules\Contact\Responses\ContactCustomFieldsListResponse;
+use Manzadey\SaloonAmoCrm\Modules\CustomField\Responses\CustomFieldsListResponse;
 use PHPUnit\Framework\TestCase;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 use Saloon\Http\Faking\MockClient;
@@ -41,7 +41,7 @@ class ContactCustomFieldsListRequestTest extends TestCase
             (new ContactCustomFieldsListRequest($this->connector))->page(1)->limit(50)
         );
 
-        $this->assertInstanceOf(ContactCustomFieldsListResponse::class, $response);
+        $this->assertInstanceOf(CustomFieldsListResponse::class, $response);
         $this->assertCount(1, $response->fields());
     }
 

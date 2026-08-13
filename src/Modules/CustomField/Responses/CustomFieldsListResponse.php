@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Manzadey\SaloonAmoCrm\Modules\Contact\Responses;
+namespace Manzadey\SaloonAmoCrm\Modules\CustomField\Responses;
 
 use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldModel;
 use Saloon\Http\Response;
 
-class ContactCustomFieldsListResponse extends Response
+class CustomFieldsListResponse extends Response
 {
     /**
      * @return array<CustomFieldModel>
