@@ -18,12 +18,22 @@ Several fixes change behaviour that used to be wrong but observable — see
 
 - `HasOrderQuery::oldest()` — orders least-recent-first (`ASC`), the counterpart
   to `latest()`.
+- `QueryOrderFieldEnum::COMPLETE_TILL` — tasks can be sorted by `complete_till`,
+  which the enum was missing.
 
 ### Removed
 
 - **`HasOrderQuery::newest()`.** It became identical to `latest()` once its
   direction was corrected (see Fixed → sorting), so the pair was collapsed into
   `latest()` / `oldest()`.
+- **`QueryOrderFieldEnum::SORT`.** `sort` is a position property of pipelines,
+  statuses and fields — not a list sort key. `order[sort]=…` was never honoured.
+- **Six filter methods no longer inherited by `TaskFilter`:** `name()`,
+  `createdBy()`, `updatedBy()`, `createdAt()`, `closestTaskAt()` and
+  `customFieldsValues()` moved from `AbstractFilter` down to `LeadFilter`. amoCRM
+  accepts none of them on tasks, so calling them built a filter the API ignored.
+  `AbstractFilter` now carries only what every entity accepts — `id()`,
+  `responsibleUserId()`, `updatedAt()` and the `range()` helper.
 
 ### Changed
 
@@ -65,6 +75,13 @@ Several fixes change behaviour that used to be wrong but observable — see
 | `newest()` expecting newest-first | `latest()` — same result, the method is gone |
 | `newest()` and relied on the old `ASC` order | `oldest()` |
 | `filter($key, …)` twice to build a multi-value filter | `filter($key, [$a, $b])` — one call, array value |
+| `QueryOrderFieldEnum::SORT` | nothing — the field was never honoured; sort by `ID`, `CREATED_AT`, `UPDATED_AT` or `COMPLETE_TILL` |
+| `TaskFilter::name()` / `createdBy()` / `updatedBy()` / `createdAt()` / `closestTaskAt()` / `customFieldsValues()` | nothing — amoCRM ignores these on tasks; the calls were silently doing nothing. Still available on `LeadFilter` |
+
+Sort fields are per-entity and the enum is a union of all of them: leads accept
+`created_at` / `updated_at` / `id`, tasks accept `created_at` / `complete_till` /
+`id`. Sorting tasks by `UPDATED_AT` (or leads by `COMPLETE_TILL`) is rejected by
+the API — the enum cannot catch that for you.
 
 Two changes need no code edit but do change the requests you send: `updatedAt()`
 starts being honoured by amoCRM (result sets get narrower), and `Model`

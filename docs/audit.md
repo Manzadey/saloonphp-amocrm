@@ -35,9 +35,10 @@
 
 ## 🟠 Логические баги (тихая порча данных / неверное поведение)
 
-> **✅ L1–L7 и AF1 исправлены в Фазе 1** (ветка `fix/logic-bugs`, по TDD, каждый —
-> отдельный коммит с регрессионным тестом). **L8** (удаление `QueryOrderFieldEnum::SORT`)
-> остаётся на Фазу 2 как ломающее. L2 сверено с офиц. докой amoCRM (`filter[updated_at]`).
+> **✅ L1–L8 и AF1, AF2 исправлены в Фазе 1** (ветка `fix/logic-bugs`, по TDD, каждый —
+> отдельный коммит с регрессионным тестом). L8 и AF2 изначально планировались на Фазу 2,
+> но сделаны здесь же — оба ломающие, и одна BC-волна дешевле двух.
+> L2, L8, AF2 сверены с офиц. докой amoCRM (`filters-api`, `leads-api`, `tasks-api`).
 
 | # | Что | Где | Серьёзность |
 |---|---|---|---|
@@ -48,7 +49,7 @@
 | L5 | `NoteItemResponse::note()` объявлен `?NoteModel`, но всегда возвращает модель даже из пустого JSON. Остальные Item-ответы (`lead/task/user`) корректно возвращают `null` | `src/Modules/Note/Responses/NoteItemResponse.php:12` | medium |
 | L6 | `HasFilterQuery::filter` через `array_merge_recursive`: повторный вызов с тем же скалярным ключом аккумулирует значение в массив. `TaskReference::list()` пресидит `entity_type` — повторный пользовательский фильтр сломает запрос | `src/Query/HasFilterQuery.php:16` | low-med |
 | L7 | `newest()` → `ASC`, `latest()` → `DESC`: семантически противоречиво (newest обычно DESC). Тихо возвращает не тот порядок сортировки. **Решено удалением `newest()`**: остались `latest()` (DESC) и новый `oldest()` (ASC) — вместо двух дублирующихся методов пара с явной семантикой | `src/Query/HasOrderQuery.php:25` | low (спорно) |
-| L8 | `QueryOrderFieldEnum::SORT = 'sort'` — **не валидное поле сортировки**. Дока amoCRM v4 для `order` перечисляет только `created_at` / `updated_at` / `id`; `sort` — свойство позиции (воронки/этапы/поля), не ключ сортировки списков. `order[sort]=…` будет проигнорирован/ошибка | `src/Enum/QueryOrderFieldEnum.php:15` | medium ✓ |
+| L8 | `QueryOrderFieldEnum::SORT = 'sort'` — **не валидное поле сортировки**. `sort` — свойство позиции (воронки/этапы/поля), не ключ сортировки списков. `order[sort]=…` будет проигнорирован/ошибка. **Исправлено**: `SORT` удалён, добавлен `COMPLETE_TILL` — при сверке выяснилось, что у задач валидны `created_at`/`complete_till`/`id`, и `complete_till` в енаме отсутствовал | `src/Enum/QueryOrderFieldEnum.php:15` | medium ✓ |
 | AF1 | `AbstractFilter::range()` использует `array_filter(compact('from','to'))` **без колбэка** → отбрасывает не только `null`, но и `0`/любые falsy. Вред: `LeadFilter::price(0, 1000)` теряет границу `from=0` (`['to'=>1000]`); то же для нулевых таймстампов. Нужно `fn($v) => $v !== null` | `src/Filters/AbstractFilter.php:16` | medium |
 
 > ⚠️ L2 требует сверки с актуальной документацией amoCRM по ключу фильтра
@@ -106,14 +107,18 @@
   (`grant_type`). Значения (`authorization_code` / `refresh_token`) верны, но имя
   класса при заморозке 1.0 фиксируется — переименовать до тега.
   (`src/Enum/GrandTypeEnum.php`)
-- **AF2 — протекающая база фильтров.** `AbstractFilter` плоско раздаёт подклассам
+- ~~**AF2 — протекающая база фильтров.** `AbstractFilter` плоско раздаёт подклассам
   ключи, невалидные для их сущности: `TaskFilter extends AbstractFilter` наследует
   `createdAt()` / `updatedBy()` / `name()` / `closestTaskAt()` / `customFieldsValues()`,
-  которых задачи amoCRM не поддерживают (по SDK у Tasks только
-  `id`/`updated_at`/`responsible_user_id`/`created_by` + свои). Метод «валиден» по
-  типам, но API его игнорирует. Тот же класс проблемы, что L8. При переходе на
-  типизированные фильтры (Фаза 2 спеки) базовый набор резать до реально
-  поддерживаемого каждой сущностью. (`src/Filters/AbstractFilter.php`)
+  которых задачи amoCRM не поддерживают. Метод «валиден» по типам, но API его
+  игнорирует. Тот же класс проблемы, что L8.~~ — ✅ **исправлено**: база урезана до
+  пересечения (`id`, `responsible_user_id`, `updated_at` + хелпер `range()`),
+  остальные шесть методов переехали в `LeadFilter`. Сверено с офиц. докой
+  (`filters-api`: у сделок 13 ключей, `tasks-api`: у задач 7). Попутно выяснилось,
+  что аудит ошибался насчёт `created_by` у задач — в доке его нет, в базе он не
+  оставлен. Трейт под общие ключи не заводился: подклассов два, и второй потребитель
+  этих методов появится только с `ContactFilter` / `CompanyFilter` — тогда и
+  извлекать. (`src/Filters/AbstractFilter.php`)
 
 ---
 
