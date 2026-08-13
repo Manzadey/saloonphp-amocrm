@@ -33,13 +33,30 @@ class WebhookRequestsTest extends TestCase
     {
         $this->connector->withMockClient(new MockClient([
             MockResponse::make([
+                '_total_items' => 2,
                 '_embedded' => [
                     'webhooks' => [
                         [
-                            'id' => 1,
-                            'destination' => 'https://example.com/webhook',
-                            'settings' => ['add_lead', 'update_lead'],
+                            'id' => 839656,
+                            'destination' => 'https://webhook-uri.com',
+                            'created_at' => 1575539157,
+                            'updated_at' => 1575539157,
+                            'account_id' => 321321,
+                            'created_by' => 123123,
+                            'sort' => 1,
                             'disabled' => false,
+                            'settings' => ['add_task'],
+                        ],
+                        [
+                            'id' => 849193,
+                            'destination' => 'https://api.test.ru/amoWebHook',
+                            'created_at' => 1576157524,
+                            'updated_at' => 1585816857,
+                            'account_id' => 321321,
+                            'created_by' => 123123,
+                            'sort' => 2,
+                            'disabled' => true,
+                            'settings' => ['update_lead'],
                         ],
                     ],
                 ],
@@ -50,11 +67,23 @@ class WebhookRequestsTest extends TestCase
 
         $this->assertInstanceOf(WebhookListResponse::class, $response);
         $this->assertTrue($response->isNotEmpty());
+        $this->assertCount(2, $response->webhooks());
 
         $webhook = $response->webhooks()[0];
-        $this->assertSame('https://example.com/webhook', $webhook->destination());
-        $this->assertSame(['add_lead', 'update_lead'], $webhook->settings());
+        $this->assertSame(839656, $webhook->id());
+        $this->assertSame('https://webhook-uri.com', $webhook->destination());
+        $this->assertSame(['add_task'], $webhook->settings());
+        $this->assertSame(1, $webhook->sort());
+        $this->assertSame(321321, $webhook->accountId());
+        $this->assertSame(123123, $webhook->createdBy());
+        $this->assertSame(1575539157, $webhook->createdAt());
+        $this->assertSame(1575539157, $webhook->updatedAt());
         $this->assertFalse($webhook->isDisabled());
+
+        $disabled = $response->webhooks()[1];
+        $this->assertSame(2, $disabled->sort());
+        $this->assertSame(1585816857, $disabled->updatedAt());
+        $this->assertTrue($disabled->isDisabled());
     }
 
     public function testListWithoutSubscriptionsReturnsNoContentWithoutBody(): void

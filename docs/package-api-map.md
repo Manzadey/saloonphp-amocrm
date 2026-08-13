@@ -241,8 +241,9 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
 обработки не требуется.
 
 **`WebhookModel`:** `id`, `accountId`, `destination`/`setDestination`,
-`settings`/`setSettings(array)`, `sortId`, `createdBy`, `isDisabled` (`true`,
-когда amoCRM сам отключил хук после серии неудачных доставок).
+`settings`/`setSettings(array)`, `sort`, `createdBy`, `createdAt`, `updatedAt`,
+`isDisabled` (`true`, когда amoCRM сам отключил хук после серии неудачных
+доставок).
 
 **Responses:** `WebhookListResponse` → `webhooks()`, `isEmpty/isNotEmpty()`.
 `WebhookResponse` → `webhook()`.

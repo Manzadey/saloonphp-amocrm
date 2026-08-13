@@ -44,9 +44,9 @@ class WebhookModel extends Model
         return $this->add('settings', array_values($settings));
     }
 
-    public function sortId(): ?int
+    public function sort(): ?int
     {
-        return $this->get('sort_id');
+        return $this->get('sort');
     }
 
     public function createdBy(): ?int
@@ -54,9 +54,19 @@ class WebhookModel extends Model
         return $this->get('created_by');
     }
 
+    public function createdAt(): ?int
+    {
+        return $this->get('created_at');
+    }
+
+    public function updatedAt(): ?int
+    {
+        return $this->get('updated_at');
+    }
+
     /**
-     * True once amoCRM has auto-disabled the hook after too many failed
-     * deliveries; the account keeps the subscription, it just stops firing.
+     * true, когда amoCRM сам отключил хук после серии неудачных доставок:
+     * подписка в аккаунте остаётся, но события больше не отправляются.
      */
     public function isDisabled(): ?bool
     {
