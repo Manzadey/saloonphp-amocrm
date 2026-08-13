@@ -32,7 +32,10 @@ class TagCreateRequest extends Request implements HasBody
         return "/$this->entityType/tags";
     }
 
-    public function tag(TagModel|array $model): static
+    /**
+     * @param TagModel|array<string, mixed> $model
+     */
+    public function add(TagModel|array $model): static
     {
         $this->body()->add(value: $model instanceof TagModel ? $model->all() : $model);
 

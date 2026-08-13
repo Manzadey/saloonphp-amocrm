@@ -24,12 +24,15 @@ class TagReference
         return new TagListRequest($this->connector, $this->entityType);
     }
 
+    /**
+     * @param TagModel|array<string, mixed>|null $tag
+     */
     public function create(TagModel|array|null $tag = null): TagCreateRequest
     {
         return TagCreateRequest::make($this->connector, $this->entityType)->when(
             $tag !== null,
             static function (TagCreateRequest $request) use ($tag): void {
-                $request->tag($tag);
+                $request->add($tag);
             }
         );
     }
@@ -38,12 +41,7 @@ class TagReference
     {
         return TagAttachRequest::make($this->connector, $this->entityType)
             ->when($model !== null, static function (TagAttachRequest $request) use ($model): void {
-                $request->model($model);
+                $request->add($model);
             });
-    }
-
-    public function updateLead(LeadModel $model): TagAttachRequest
-    {
-        return $this->update($model);
     }
 }

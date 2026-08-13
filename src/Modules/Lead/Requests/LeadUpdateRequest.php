@@ -20,17 +20,23 @@ class LeadUpdateRequest extends AbstractLeadRequest implements HasBody
 
     protected ?string $response = LeadUpdateResponse::class;
 
-    public function addLead(LeadModel|array $model): static
+    /**
+     * @param LeadModel|array<string, mixed> $model
+     */
+    public function add(LeadModel|array $model): static
     {
         $this->body()->add(value: $model instanceof LeadModel ? $model->all() : $model);
 
         return $this;
     }
 
-    public function addLeads(...$models): static
+    /**
+     * @param LeadModel|array<string, mixed> ...$models
+     */
+    public function addMany(LeadModel|array ...$models): static
     {
         foreach ($models as $model) {
-            $this->addLead($model);
+            $this->add($model);
         }
 
         return $this;
