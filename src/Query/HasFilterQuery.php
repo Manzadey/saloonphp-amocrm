@@ -13,10 +13,10 @@ trait HasFilterQuery
 {
     public function filter(string $key, array|string|int $value): static
     {
-        $this->query()->add(
-            'filter',
-            array_merge_recursive($this->query()->get('filter', []), [$key => $value])
-        );
+        $filter = $this->query()->get('filter', []);
+        $filter[$key] = $value;
+
+        $this->query()->add('filter', $filter);
 
         return $this;
     }

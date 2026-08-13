@@ -22,14 +22,14 @@ trait HasOrderQuery
         return $this;
     }
 
-    public function newest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
-    {
-        return $this->order($field, QueryOrderEnum::ASC);
-    }
-
     public function latest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
     {
         return $this->order($field, QueryOrderEnum::DESC);
+    }
+
+    public function oldest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
+    {
+        return $this->order($field, QueryOrderEnum::ASC);
     }
 
     public function removeOrder(): static

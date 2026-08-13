@@ -262,7 +262,7 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
 - `HasLimitQuery` → `limit(int)`
 - `HasSearchQuery` → `querySearch(string|int)`
 - `HasFilterQuery` → `filter(key, value)`
-- `HasOrderQuery` → `order(field, dir)`, `newest()`, `latest()`, `removeOrder()`
+- `HasOrderQuery` → `order(field, dir)`, `latest()`, `oldest()`, `removeOrder()`
 - `HasWithQuery` → `with(array)`, `addWith(string)`
 
 **`AbstractFilter`** (база всех фильтров): `range(name,from,to)`,
