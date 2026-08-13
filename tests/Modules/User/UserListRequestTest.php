@@ -9,6 +9,7 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Modules\User\Requests\UserItemRequest;
 use Manzadey\SaloonAmoCrm\Modules\User\Requests\UserListRequest;
 use Manzadey\SaloonAmoCrm\Modules\User\Responses\UserListResponse;
+use Manzadey\SaloonAmoCrm\Modules\User\UserWith;
 use PHPUnit\Framework\TestCase;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 use Saloon\Http\Faking\MockClient;
@@ -77,14 +78,15 @@ class UserListRequestTest extends TestCase
 
     public function testWithAcceptsArrayOfValues(): void
     {
-        $request = (new UserListRequest($this->connector))->with(['uuid', 'amojo_id', 'phone_number']);
+        $request = (new UserListRequest($this->connector))
+            ->with([UserWith::UUID, UserWith::AMOJO_ID, UserWith::PHONE_NUMBER]);
 
         $this->assertSame('uuid,amojo_id,phone_number', $request->query()->get('with'));
     }
 
     public function testItemRequestSharesTheSameWithQuery(): void
     {
-        $request = (new UserItemRequest($this->connector, 1))->with(['role'])->withGroup();
+        $request = (new UserItemRequest($this->connector, 1))->with([UserWith::ROLE])->withGroup();
 
         $this->assertSame('role,group', $request->query()->get('with'));
     }

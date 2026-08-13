@@ -12,7 +12,7 @@ use Saloon\Enums\Method;
 class ContactListRequest extends AbstractContactRequest
 {
     use SendsTypedResponse;
-    use HasContactWithQuery;
+    use Traits\HasContactWithQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
     use Query\HasSearchQuery;

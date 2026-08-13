@@ -4,39 +4,41 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\User\Requests\Traits;
 
+use Manzadey\SaloonAmoCrm\Modules\User\UserWith;
 use Manzadey\SaloonAmoCrm\Query\HasWithQuery;
 
 trait HasUserWithQuery
 {
+    /** @use HasWithQuery<UserWith> */
     use HasWithQuery;
 
     public function withRole(): static
     {
-        return $this->addWith('role');
+        return $this->addWith(UserWith::ROLE);
     }
 
     public function withGroup(): static
     {
-        return $this->addWith('group');
+        return $this->addWith(UserWith::GROUP);
     }
 
     public function withUuid(): static
     {
-        return $this->addWith('uuid');
+        return $this->addWith(UserWith::UUID);
     }
 
     public function withAmojoId(): static
     {
-        return $this->addWith('amojo_id');
+        return $this->addWith(UserWith::AMOJO_ID);
     }
 
     public function withUserRank(): static
     {
-        return $this->addWith('user_rank');
+        return $this->addWith(UserWith::USER_RANK);
     }
 
     public function withPhoneNumber(): static
     {
-        return $this->addWith('phone_number');
+        return $this->addWith(UserWith::PHONE_NUMBER);
     }
 }

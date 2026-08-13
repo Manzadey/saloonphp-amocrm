@@ -132,8 +132,7 @@ class Client
     }
 
     /**
-     * @param array<string|\Manzadey\SaloonAmoCrm\Modules\Account\AccountWithQueryEnum>|null $with
-     * @return AccountRequest
+     * @param list<\Manzadey\SaloonAmoCrm\Modules\Account\AccountWith>|null $with
      */
     public function account(?array $with = null): AccountRequest
     {

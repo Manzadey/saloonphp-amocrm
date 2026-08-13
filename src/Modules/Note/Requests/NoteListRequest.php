@@ -15,6 +15,7 @@ use Saloon\Http\Request;
 class NoteListRequest extends Request
 {
     use SendsTypedResponse;
+    use Traits\HasNoteWithQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
     use Query\HasFilterQuery;
