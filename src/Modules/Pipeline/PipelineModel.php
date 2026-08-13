@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Pipeline;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 use Manzadey\SaloonAmoCrm\Modules\Pipeline\Status\PipelineStatusModel;
 
@@ -45,13 +46,10 @@ class PipelineModel extends Model
     }
 
     /**
-     * @return array<PipelineStatusModel>
+     * @return list<PipelineStatusModel>
      */
     public function statuses(): array
     {
-        return array_map(
-            static fn (array $status): PipelineStatusModel => new PipelineStatusModel($status),
-            $this->get('_embedded.statuses', [])
-        );
+        return ModelCollection::of(PipelineStatusModel::class, $this->get('_embedded.statuses'))->all();
     }
 }

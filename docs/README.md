@@ -11,7 +11,7 @@
 | [official-library-study.md](official-library-study.md) | Разбор официального SDK `amocrm/amocrm-api-library` 1.15.0 + gap-таблица «SDK → обёртка» | Роадмап портирования, что ещё реализовать |
 | [amocrm-api-abilities.md](amocrm-api-abilities.md) | Возможности официального API amoCRM (полный обзор платформы по докам разработчика) | Справка по самому API amoCRM |
 | [superpowers/specs/2026-06-07-amocrm-v1-release-design.md](superpowers/specs/2026-06-07-amocrm-v1-release-design.md) | Дизайн релиза v1.0: полный паритет с SDK 1.15, фазы, ломающие изменения, гейты | Планирование и реализация v1.0 |
-| [folder-structure.md](folder-structure.md) | Целевая структура папок `src/` под v1.0: модули сущностей, коллекции, фабрики, инфраструктура | Ориентир по раскладке при реализации |
+| [folder-structure.md](folder-structure.md) | Целевая структура папок `src/` под v1.0: модули сущностей, коллекции, инфраструктура | Ориентир по раскладке при реализации |
 | [query-traits-application.md](query-traits-application.md) | Аудит применимости Query-трейтов к текущим запросам + карта трейтов для новых сущностей | Подключение page/limit/order/filter/with по сущностям |
 
 ## Краткая навигация по задачам

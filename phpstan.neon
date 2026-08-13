@@ -1,6 +1,6 @@
 # Прогрессивный ратчет до level 9 (см. docs/superpowers/specs/2026-06-07-amocrm-v1-release-design.md).
-# Текущая фаза: 2 — level 6.
+# Текущая фаза: 3 — level 7.
 parameters:
-    level: 6
+    level: 7
     paths:
         - src

@@ -8,7 +8,66 @@ releases page for those.
 
 ## [Unreleased]
 
-Phase 2 of the road to 1.0: the public API is unified and typed. Magic strings and
+Phases 2 and 3 of the road to 1.0, released together. Both are breaking: the
+public API is unified and typed, and responses hand back typed collections.
+
+---
+
+### Phase 3 — typed collections
+
+Responses return typed collections instead of raw arrays of models.
+
+### Added
+
+- **`Collections\ModelCollection`** — the single place where `mixed` from `json()`
+  becomes a list of models. Iterable and countable, with `first()`, `all()`,
+  `isEmpty()`, `isNotEmpty()`, `count()`. A body that isn't a list (amoCRM answers
+  `204 No Content` instead of an empty list for pipelines and webhooks) yields an
+  empty collection instead of a `TypeError`.
+- `Modules\Tag\Responses\TagListResponse` and `TagCreateResponse` — tags were the
+  last entity handing back a raw `Saloon\Response`.
+
+### Changed
+
+- **Response methods that returned an `array` of models now return
+  `ModelCollection`.** `foreach` and `count()` work as before; index access goes
+  through `first()` or `all()`.
+- `TagListRequest::send()` and `TagCreateRequest::send()` return typed responses.
+  `TagAttachRequest` deliberately still returns `Saloon\Response`: `PATCH /{entity}`
+  answers with `_embedded.{entity}`, whose shape depends on the entity type — that
+  arrives with the entity update requests.
+- `CustomFieldModel::addValue()` no longer takes `mixed`. It accepts
+  `CustomFieldValueModel|array|string|int|float|bool|null`; anything else used to
+  pass straight through and blow up inside `setValues()`. `float` is now handled
+  like the other scalars — amoCRM numeric fields do return fractional values.
+- PHPStan is enforced at level 7 (was 6) — internal quality gate, no runtime effect.
+
+### Removed
+
+- **`isEmpty()`/`isNotEmpty()` on responses** — they live on the collection now:
+  `$response->leads()->isEmpty()`.
+- **`LeadListResponse::lead()`, `LeadAddResponse::lead()`,
+  `TaskListResponse::task()`** — use `->first()` on the collection.
+
+### Upgrading
+
+| If you called | Do this instead |
+|---|---|
+| `$r->leads()[0]` | `$r->leads()->first()` |
+| `array_map($fn, $r->leads())` | `array_map($fn, $r->leads()->all())` |
+| `$r->isEmpty()` / `$r->isNotEmpty()` | `$r->leads()->isEmpty()` / `->isNotEmpty()` |
+| `$r->lead()` / `$r->task()` | `$r->leads()->first()` / `$r->tasks()->first()` |
+| `count($r->leads())` | unchanged — the collection is `Countable` |
+| `foreach ($r->leads() as $lead)` | unchanged — the collection is iterable |
+
+Item responses (`lead()`, `task()`, `note()`, `user()`, `webhook()`) still return a
+single model or `null` — unchanged.
+
+---
+
+### Phase 2 — API unification
+
+The public API is unified and typed. Magic strings and
 the union enums they leaned on are gone — every `with`, `order` and `filter` value
 is now an enum or filter object belonging to a single entity.
 

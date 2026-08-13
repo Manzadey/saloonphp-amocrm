@@ -1,7 +1,7 @@
 # Целевая структура папок (v1.0)
 
 > Планируемая раскладка `src/` после реализации [спеки релиза v1.0](superpowers/specs/2026-06-07-amocrm-v1-release-design.md):
-> полный паритет с SDK 1.15, типобезопасные коллекции + фабрики, типизированные
+> полный паритет с SDK 1.15, типобезопасные коллекции, типизированные
 > фильтры и `with`-enum. Документ — ориентир; точные имена уточняются при реализации
 > каждой фазы.
 >
@@ -10,12 +10,12 @@
 ## Принципы раскладки
 
 - **Модуль на сущность.** Всё, что относится к сущности, лежит в
-  `src/Modules/<Entity>/` (модель, коллекция, фабрика, фильтр, `with`-enum,
+  `src/Modules/<Entity>/` (модель, фильтр, `with`-enum, поля сортировки,
   Reference, Requests/, Responses/). Сохраняем текущую конвенцию проекта.
 - **Общая инфраструктура** — в корне `src/` (Client, Connectors, Configs, Query,
   Filters, Collections, Responses, Enum, Exceptions, Contracts).
 - **Базовые классы** — рядом с одноимённой папкой: `Modules/Model.php`,
-  `Filters/AbstractFilter.php`, `Collections/BaseCollection.php`.
+  `Filters/AbstractFilter.php`, `Collections/ModelCollection.php`.
 - **Вложенность** — только для настоящих «родитель → потомок» (Pipelines → Statuses
   → LossReasons; Customers → Statuses/BonusPoints; Sources → WebsiteButtons; Chats →
   Templates). Остальное — плоско.
@@ -30,7 +30,6 @@
 src/Modules/Lead/
 ├── LeadReference.php          ✓  точка входа: list/item/create/update/delete (+ sub-ref)
 ├── LeadModel.php              ✓  доменная модель (ArrayStore)
-├── LeadCollection.php         ➕ типобезопасная коллекция моделей
 ├── LeadFactory.php            ➕ фабрика модели из массива ответа
 ├── LeadFilter.php             ✓  типизированный фильтр (наружу вместо строкового filter())
 ├── LeadWith.php               ➕ enum параметров ?with= (вместо magic-строк)
@@ -42,7 +41,7 @@ src/Modules/Lead/
 │   ├── LeadUpdateRequest.php     ✓
 │   └── LeadDeleteRequest.php     ➕ где применимо (по HasDeleteMethodInterface SDK)
 └── Responses/
-    ├── LeadListResponse.php      ✓  возвращает LeadCollection
+    ├── LeadListResponse.php      ✓  возвращает ModelCollection<LeadModel>
     ├── LeadItemResponse.php      ✓
     ├── LeadCreateResponse.php    ✓
     └── LeadUpdateResponse.php    ✓
@@ -84,12 +83,13 @@ src/
 ├── Filters/                           ✓
 │   └── AbstractFilter.php             ✓  база типизированных фильтров
 │
-├── Collections/                       ➕ доменный слой коллекций
-│   └── BaseCollection.php             ➕ база типобезопасных коллекций
+├── Collections/                       ✓  доменный слой коллекций
+│   └── ModelCollection.php            ✓  одна generic-коллекция на все сущности
 │
 ├── Responses/                         ✓  общие response-трейты
 │   ├── HasPageResponse.php            ✓
-│   └── HasLinksResponse.php           ✓
+│   ├── HasLinksResponse.php           ✓
+│   └── HasEmbeddedModels.php          ✓  embedded() / single()
 │
 ├── Enum/                              ✓  общие enum
 │   ├── QueryOrderEnum.php             ✓
