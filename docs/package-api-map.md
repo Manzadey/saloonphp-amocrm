@@ -30,7 +30,7 @@ Client
 
 Хелперы запроса: `exchangeAuthCode(code)` → `grant_type=authorization_code` + `code`;
 `refreshAccessToken(token)` → `grant_type=refresh_token` + `refresh_token`.
-Сеттеры: `setAuthCode`, `setRefreshToken`, `setGrandType(GrandTypeEnum)`.
+Сеттеры: `setAuthCode`, `setRefreshToken`, `setGrantType(GrantTypeEnum)`.
 
 ---
 
@@ -40,10 +40,10 @@ Client
 |---|---|---|---|---|
 | `AccountRequest` | GET | `/account` | `with` (csv) | `AccountResponse` |
 
-**Параметры `with`** (`AccountWithQueryEnum`): `amojo_id`, `amojo_rights`,
+**Параметры `with`** (`AccountWith`): `amojo_id`, `amojo_rights`,
 `users_groups`, `task_types`, `version`, `entity_names`, `datetime_settings`,
 `drive_url`, `is_api_filter_enabled`, `invoices_settings`.
-Методы: `with(enum|string)`, `withAll()`.
+Методы: `with(list<AccountWith>)`, `addWith(AccountWith)`, `withAll()`.
 
 **`AccountResponse`:** `getId`, `getName`, `getSubdomain`, `getCreatedAt`,
 `getCreatedBy`, `getUpdatedAt`, `getUpdatedBy`, `getCurrentUserId`,
@@ -58,15 +58,18 @@ Client
 | `list()` | `LeadListRequest` | GET | `/leads` | order, search, with, filter, page, limit | `LeadListResponse` |
 | `search($q)` | `LeadListRequest` | GET | `/leads` | `query=$q` | `LeadListResponse` |
 | `item($id)` | `LeadItemRequest` | GET | `/leads/{id}` | with, `limit=1` | `LeadItemResponse` |
-| `create(?LeadModel)` | `LeadCreateRequest` | POST | `/leads` | body: массив сделок (`add()`) | `LeadAddResponse` |
-| `update()` | `LeadUpdateRequest` | PATCH | `/leads` | body: `addLead()`/`addLeads()` | `LeadUpdateResponse` (пустой) |
+| `create(LeadModel)` | `LeadCreateRequest` | POST | `/leads` | body: массив сделок (`add()`) | `LeadAddResponse` |
+| `update()` | `LeadUpdateRequest` | PATCH | `/leads` | body: `add()`/`addMany()` | `LeadUpdateResponse` (пустой) |
 | `customFields()` | `LeadCustomFieldsListRequest` | GET | `/leads/custom_fields` | order, filter, page, limit | `CustomFieldsListResponse` |
 | `notes()` | → `NoteReferences('leads')` | | | | см. §6 |
 | `tags()` | → `TagReference('leads')` | | | | см. §8 |
 
-**`with` сделки** (`HasLeadWithQuery`): `withCatalogElements`,
+**`with` сделки** (`HasLeadWithQuery` → `LeadWith`): `withCatalogElements`,
 `withIsPriceModifiedByRobot`, `withLossReason`, `withContacts`,
-`withOnlyDeleted`, `withSourceId`.
+`withOnlyDeleted`, `withSourceId`, `withSource`.
+
+**Сортировка** (`LeadOrderField`): `created_at`, `updated_at`, `id`.
+**Фильтр:** `addFilter(LeadFilter)`.
 
 **`LeadFilter`** (+ общие из `AbstractFilter`, см. §10): `price(from,to)`,
 `statuses(array)`, `addStatus(id, pipelineId)`, `pipelineId(id)`,
@@ -90,11 +93,14 @@ Client
 |---|---|---|---|---|---|
 | `list()` | `ContactListRequest` | GET | `/contacts` | with, page, limit, search, filter, order | `ContactListResponse` |
 | `search($q)` | `ContactListRequest` | GET | `/contacts` | `query=$q` | `ContactListResponse` |
-| `create(?ContactModel)` | `ContactCreateRequest` | POST | `/contacts` | body: `add()` → `save()` | `ContactCreateResponse` |
+| `create(ContactModel)` | `ContactCreateRequest` | POST | `/contacts` | body: `add()` | `ContactCreateResponse` |
 | `customFields()` | `ContactCustomFieldsListRequest` | GET | `/contacts/custom_fields` | order, filter, page, limit | `CustomFieldsListResponse` |
 
-**`with` контакта** (`HasContactWithQuery`): `withCatalogElements`, `withLeads`,
-`withCustomers`.
+**`with` контакта** (`HasContactWithQuery` → `ContactWith`): `withCatalogElements`,
+`withLeads`, `withCustomers`.
+
+**Сортировка** (`ContactOrderField`): `updated_at`, `id` — `created_at` amoCRM у
+контактов не принимает. **Фильтр:** `addFilter(ContactFilter)`.
 
 **`ContactModel` (тело):** `setId`, `setName`, `setFirstName`, `setLastName`,
 `setResponsibleUserId`, `setGroupId`, `setCreatedBy/By`,
@@ -135,12 +141,13 @@ page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
 
 | Ref-метод | Request | Method | Endpoint | Параметры | Response |
 |---|---|---|---|---|---|
-| `list(?entityId)` | `NoteListRequest` | GET | `/{entity}[/{entityId}]/notes` | page, limit, filter | `NoteListResponse` |
+| `list(?entityId)` | `NoteListRequest` | GET | `/{entity}[/{entityId}]/notes` | page, limit, filter, order, with | `NoteListResponse` |
 | `item($id,?entityId)` | `NoteItemRequest` | GET | `/{entity}[/{entityId}]/notes/{id}` | — | `NoteItemResponse` |
 | `create(?entityId)` | `NotesCreateRequest` | POST | `/{entity}[/{entityId}]/notes` | body: `add()`/`addCommonNote()` | `NoteCreateResponse` |
 
-**Фильтры списка:** `filterId(id)`, `filterEntityId(array)`,
-`filterNoteType(NoteTypeEnum)`.
+**Фильтр:** `addFilter(NoteFilter)` — `id()`, `entityId()`, `noteType()`,
+`updatedAt()`. **Сортировка** (`NoteOrderField`): `updated_at`, `id`.
+**`with`** (`HasNoteWithQuery` → `NoteWith`): `withIsPinned`.
 
 **`NoteTypeEnum`:** `common`, `call_in`, `call_out`, `service_message`,
 `message_cashier`, `geolocation`, `sms_in`, `sms_out`,
@@ -178,9 +185,9 @@ Read: `name` (строка). Responses: `UserListResponse` → `users()`,
 
 | Ref-метод | Request | Method | Endpoint | Параметры | Response |
 |---|---|---|---|---|---|
-| `list()` | `TagListRequest` | GET | `/{entity}/tags` | page, limit, filter, search; `filterName()`, `filterId()` | `Saloon\Response` |
-| `create(?tag)` | `TagCreateRequest` | POST | `/{entity}/tags` | body: `tag(TagModel)` | `Saloon\Response` |
-| `update(?TagsContract)` / `updateLead(LeadModel)` | `TagAttachRequest` | PATCH | `/{entity}` | body: `model()` (привязка тегов к сущности) | `Saloon\Response` |
+| `list()` | `TagListRequest` | GET | `/{entity}/tags` | page, limit, search; `addFilter(TagFilter)` | `Saloon\Response` |
+| `create($tag)` | `TagCreateRequest` | POST | `/{entity}/tags` | body: `add(TagModel)` | `Saloon\Response` |
+| `update(TagsContract)` | `TagAttachRequest` | PATCH | `/{entity}` | body: `add()` (привязка тегов к сущности) | `Saloon\Response` |
 
 **`TagModel`:** `setId`, `setName`, `setColor(TagColorEnum|string)`.
 `TagColorEnum` — 23 предопределённых HEX-цвета.
@@ -261,17 +268,22 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
 - `HasPageQuery` → `page(int)`
 - `HasLimitQuery` → `limit(int)`
 - `HasSearchQuery` → `querySearch(string|int)`
-- `HasFilterQuery` → `filter(key, value)`
-- `HasOrderQuery` → `order(field, dir)`, `latest()`, `oldest()`, `removeOrder()`
-- `HasWithQuery` → `with(array)`, `addWith(string)`
+- `HasFilterQuery<TFilter>` → `addFilter(TFilter)`; `filter()` — `protected`
+- `HasOrderQuery<TField>` → `order(TField, QueryOrderEnum)`, `removeOrder()`
+- `HasWithQuery<TWith>` → `with(list<TWith>)`, `addWith(TWith)`
 
-**`AbstractFilter`** (база всех фильтров): `range(name,from,to)`,
-`customFieldsValues(array)`, `id()`, `name()`, `createdBy()`, `updatedBy()`,
-`responsibleUserId()`, `createdAt(from,to)`, `updatedAt(from,to)`,
-`closestTaskAt(from,to)`.
+`latest()` / `oldest()` — в пер-сущностных обёртках (`HasLeadOrderQuery` и т.п.):
+их дефолт `::ID` конкретного енама generic-параметром невыразим.
 
-**Enums:** `QueryOrderEnum` (`asc`/`desc`); `QueryOrderFieldEnum`
-(`id`, `created_at`, `updated_at`, `sort`); `GrandTypeEnum`
+**`AbstractFilter`** — только то, что принимает каждая сущность с фильтрами:
+`range(name,from,to)`, `id()`, `responsibleUserId()`, `updatedAt(from,to)`.
+Общее для сделок и контактов — трейт `HasCommonEntityFilters`: `name()`,
+`createdBy()`, `updatedBy()`, `createdAt()`, `closestTaskAt()`,
+`customFieldsValues()`. `NoteFilter` и `TagFilter` наследуют `ArrayStore` напрямую.
+
+**Enums:** `QueryOrderEnum` (`asc`/`desc`); поля сортировки — по сущности
+(`LeadOrderField`, `ContactOrderField`, `TaskOrderField`, `NoteOrderField`,
+`CustomFieldOrderField`); `GrantTypeEnum`
 (`authorization_code`/`refresh_token`).
 
 **Response-трейты:** `HasPageResponse` → `page()`; `HasLinksResponse` →

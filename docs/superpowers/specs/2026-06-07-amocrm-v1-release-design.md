@@ -103,7 +103,7 @@
 | Pre-flight | ✅ | `dev` синхронизирован с `main` |
 | 0 — Стабилизация | ✅ | B1–B3, инфраструктура, CI, level 3 |
 | 1 — Логические баги | ✅ | L1–L8, AF1, AF2, level 5, `CHANGELOG` → **`v0.8.0`** |
-| 2 — Унификация API | ⏳ | level 6 |
+| 2 — Унификация API | ✅ | level 6 (ратчет — отдельным PR) |
 | 3 — Доменный слой | ⏳ | level 7 |
 | 4 — Паритет сущностей | ⏳ | level 8, 12 групп `4a`–`4l` |
 | 5 — Полировка | ⏳ | level 9 |
@@ -137,48 +137,67 @@
 - **Ратчет:** phpstan **level 5** — выполнено.
 - **Гейт:** ✅ 105 тестов / 211 assertions, CI зелёный (PHP 8.2–8.4), phpstan level 5.
 
-> Осталось от этого круга задач: `QueryOrderFieldEnum` — объединение полей по всем
-> сущностям, поэтому сортировка задач по `UPDATED_AT` (или сделок по `COMPLETE_TILL`)
-> типами не ловится и отклоняется API в рантайме. Тот же класс проблемы, что AF2, но
-> на уровень выше; честный фикс — енам на сущность + generic `HasOrderQuery`, что
-> трогает сигнатуры всех list-запросов. Отнесено в Фазу 2.
+> ~~Осталось от этого круга задач: `QueryOrderFieldEnum` — объединение полей по всем
+> сущностям.~~ — ✅ закрыто в Фазе 2 разделением на пер-сущностные енамы. Там же
+> вскрылось, что удаление `SORT` было ошибкой для кастом-полей — исправлено патчем
+> `v0.8.1`.
 
-### Фаза 2 — Унификация и типизация API (`refactor/api-consistency`) — BREAKING
-- `send()` везде; **удалить** `ContactCreateRequest::save()`.
-- Имена создания: `add` / `addLead` / `tag` / `model` → канонические `add()` /
-  `addMany()`.
-- Единый `with` на enum (`LeadWith`, `ContactWith`, …) вместо 5 реализаций и
-  magic-строк. **Единый механизм — трейт `Query\HasWithQuery`** (сделать
-  enum-aware). Мигрировать на него:
-  - `AccountRequest::with()` / `withAll()` — сейчас **переопределяют** логику, трейт
-    не подключают; перевести на трейт + `AccountWith` enum.
-  - `UserItemRequest::with()` — inline-дубликат, перевести на трейт.
-  - `HasLeadWithQuery` / `HasContactWithQuery` — оставить как тонкие обёртки над
-    трейтом с типизированными методами-ярлыками.
-  - Переименовать `AccountWithQueryEnum` → `AccountWith` (консистентность с
-    `LeadWith` / `ContactWith`).
-- Обязательные параметры → конструктор как **`readonly`-свойства** (частичная
-  иммутабельность; `create()` принимает модель обязательно; `id`/`entityType` —
-  только через конструктор, сеттеров на них нет).
-- Фильтры: скрыть «строковый» `filter()` из публичного API, наружу — только
-  типизированные фильтр-объекты. AF2 (резать базовый набор `AbstractFilter` до
-  реально поддерживаемых каждой сущностью ключей) уже сделан в Фазе 1 — здесь
-  остаётся только сокрытие строкового `filter()`.
-- **Enum-исправления (см. audit.md):**
-  - `GrandTypeEnum` → **переименовать** в `GrantTypeEnum` (опечатка `grant_type`;
-    значения не меняются).
-  - `QueryOrderFieldEnum` — **разделить по сущностям**. `SORT` удалён в Фазе 1, но
-    енам остался объединением: сделки принимают `created_at`/`updated_at`/`id`,
-    задачи — `created_at`/`complete_till`/`id`. Невалидную комбинацию типы не ловят.
-    Требует generic `HasOrderQuery` по типу поля → трогает сигнатуры всех
-    list-запросов, поэтому здесь, вместе с прочей типизацией.
-- **Пробелы Query-трейтов** (см. [query-traits-application.md](../../query-traits-application.md)):
-  `NoteListRequest` → добавить `HasOrderQuery`; `UserListRequest` → page/limit/with;
-  `ContactCustomFieldsListRequest` → page/limit/order (+ унифицировать с
-  `CustomFieldListRequest`).
-- **Ратчет:** поднять phpstan до **level 6** (типизация фильтров/`with`/enum закрывает
-  обрыв 5→6: `missingType.iterableValue`, generics).
+### Фаза 2 — Унификация и типизация API (`refactor/api-consistency`) — ✅ BREAKING
+
+Разбита на два PR: ломающая унификация и отдельно ратчет level 6 — правки почти не
+пересекаются, а один PR на ~45 файлов нечитаем.
+
+**Перед планированием сверены доки каждой сущности отдельно.** Это дало матрицу,
+которая расходилась и с планом, и с кодом:
+
+| Сущность | `order` | `with` | `filter` |
+|---|---|---|---|
+| сделки | `created_at`, `updated_at`, `id` | 7 (+`source`, не было) | 13 |
+| контакты | `updated_at`, `id` (**без `created_at`**) | 3 | 9 |
+| задачи | `created_at`, `complete_till`, `id` | — | 7 |
+| примечания | `updated_at`, `id` (не было) | `is_pinned` (не было) | 4 |
+| кастом-поля | `sort`, `id` | — | `type` |
+| теги | **не поддерживается** | — | `name`, `id` |
+| пользователи | не поддерживается | 6 | не поддерживается |
+
+Сделано (коммит на раздел):
+
+- **Имена.** `ContactCreateRequest::save()`, `LeadUpdateRequest::addLead()`/
+  `addLeads()`, `TagCreateRequest::tag()`, `TagAttachRequest::model()`,
+  `TagReference::updateLead()` срезаны → `send()`, `add()`, `addMany()`, `add()`,
+  `update()`. Попутно `CustomFieldListRequest` получил `send()`.
+- **`with` на енамах.** `HasWithQuery` стал generic по `Query\WithField`; енамы
+  `LeadWith`/`ContactWith`/`UserWith`/`NoteWith`/`AccountWith`. `AccountRequest`
+  переведён на трейт, `withAll()` живёт в `HasAccountWithQuery` (перебор `cases()`
+  требует знания енама). `HasContactWithQuery` переехал в `Requests/Traits/`.
+- **Пер-сущностные поля сортировки.** `QueryOrderFieldEnum` удалён; `HasOrderQuery`
+  generic по `Query\OrderField`, `latest()`/`oldest()` — в пер-сущностных обёртках
+  (дефолт `::ID` конкретного енама generic-параметром невыразим).
+- **`readonly` + обязательная модель.** Гейт держит reflection-тест: любой
+  promoted-параметр конструктора запроса обязан быть `readonly`, поэтому новый
+  запрос не сможет добавить изменяемый.
+- **Фильтры.** `filter()` → `protected`, `addFilter()` — один generic-метод в трейте
+  вместо восьми копий. Новые `ContactFilter`, `NoteFilter`, `TagFilter`; шесть общих
+  для сделок и контактов ключей — в трейте `HasCommonEntityFilters` (в Фазе 1 они
+  ждали второго потребителя — им стал `ContactFilter`).
+- **`GrandTypeEnum` → `GrantTypeEnum`.**
+- **Пробелы Query-трейтов** закрыты: `NoteListRequest` получил order и `with`;
+  `UserListRequest` и `ContactCustomFieldsListRequest` были закрыты ещё до Фазы 2.
+
+> Типизация проверена на отрицательных примерах, а не только на зелёных тестах:
+> `TaskListRequest::latest(LeadOrderField::UPDATED_AT)` и
+> `LeadListRequest::addFilter(NoteFilter::make())` отвергаются PHPStan на level 6,
+> а первое — ещё и PHP в рантайме.
+
+- **Ратчет:** phpstan **level 6** — PR `chore/phpstan-level-6`. Замер: 65 ошибок,
+  64 из них `missingType.iterableValue` в моделях, ответах и контрактах, т.е. с
+  ломающими правками пересечения почти нет (потому и отдельный PR).
 - **Гейт:** старые имена срезаны, публичный API типизирован, **phpstan level 6**.
+
+> Осталось от этого круга: дубль `ContactCustomFieldsListRequest` /
+> `CustomFieldListRequest` — сводить в Фазе 4c вместе с остальными кастом-полями.
+> Теги по-прежнему отдают сырой `Saloon\Response` — типизированные ответы требуют
+> новых Response-классов, это Фаза 3.
 
 ### Фаза 3 — Доменный слой: коллекции + фабрики (`refactor/typed-collections`) — BREAKING
 - Ввести `BaseCollection`, коллекции и фабрики; перевести Response существующих
@@ -236,19 +255,21 @@
 | Было | Стало | Фаза |
 |---|---|---|
 | `requestId(): array\|int\|null` | корректный тип (B1) | 0 |
-| `ContactCreateRequest::save()` | `send()` | 2 |
-| `addLead` / `addLeads` / `tag` / `model` | `add()` / `addMany()` | 2 |
-| 5 разных `with(...)`, magic-строки | единый трейт `HasWithQuery` + enum `LeadWith` / `ContactWith` / … | 2 |
-| `AccountRequest::with()`/`withAll()`, `UserItemRequest::with()` — свои реализации | трейт `HasWithQuery` | 2 |
-| `AccountWithQueryEnum` | `AccountWith` | 2 |
-| `filter(string $key, $value)` публичный | только типизированные фильтр-объекты | 2 |
-| `create()` с опциональной моделью | модель обязательна | 2 |
+| `ContactCreateRequest::save()` | `send()` | **2** ✅ |
+| `addLead` / `addLeads` / `tag` / `model` / `updateLead` | `add()` / `addMany()` / `update()` | **2** ✅ |
+| 5 разных `with(...)`, magic-строки | единый generic-трейт `HasWithQuery<TWith>` + енамы по сущности | **2** ✅ |
+| `AccountRequest::with()`/`withAll()` — своя реализация | трейт `HasWithQuery` | **2** ✅ |
+| `AccountWithQueryEnum` | `AccountWith` | **2** ✅ |
+| `filter(string $key, $value)` публичный | `protected`; наружу `addFilter(TFilter)` | **2** ✅ |
+| `create()` с опциональной моделью | модель обязательна | **2** ✅ |
 | `QueryOrderFieldEnum::SORT` | удалён (L8 — невалидное поле) | **1** ✅ |
 | `HasOrderQuery::newest()` | удалён; `latest()` (DESC) + `oldest()` (ASC) | **1** ✅ |
 | `TaskFilter` наследует `name`/`createdBy`/`updatedBy`/`createdAt`/`closestTaskAt`/`customFieldsValues` | не наследует; методы у `LeadFilter` (AF2) | **1** ✅ |
 | `filter()` аккумулирует повторный скалярный ключ | last-wins (L6) | **1** ✅ |
-| `GrandTypeEnum` | `GrantTypeEnum` (опечатка) | 2 |
-| `QueryOrderFieldEnum` — объединение полей всех сущностей | енам на сущность + generic `HasOrderQuery` | 2 |
+| `GrandTypeEnum` | `GrantTypeEnum` (опечатка) | **2** ✅ |
+| `QueryOrderFieldEnum` — объединение полей всех сущностей | енам на сущность + generic `HasOrderQuery` | **2** ✅ |
+| `NoteListRequest::filterId`/`filterEntityId`/`filterNoteType`, `TagListRequest::filterName`/`filterId` | `NoteFilter` / `TagFilter` | **2** ✅ |
+| сортировка контактов по `created_at` | невыразима — amoCRM её не поддерживал | **2** ✅ |
 | Response → массив моделей | Response → типобезопасная коллекция | 3 |
 
 ## Качество (гейты CI)
@@ -260,7 +281,7 @@
   |---|:--:|:--:|---|
   | 0 | 3 | ~9 | инфраструктура, мелочи ✅ |
   | 1 | 5 | +3 | заодно с багами L1–L8 ✅ |
-  | 2 | 6 | +66 (обрыв 5→6; замер на `v0.8.0`) | типизация фильтров / `with` / enum, generics |
+  | 2 | 6 | +65 (обрыв 5→6; замер на `v0.8.1`) ✅ | `missingType.iterableValue` в моделях/ответах/контрактах |
   | 3 | 7 | +2 | коллекции + типизированные аксессоры/фабрики |
   | 4 | 8 | +12 | новый код пишется чисто; narrowing `mixed` через фабрики |
   | 5 | **9** | +174 (обрыв 8→9) | добивание `mixed` из `json()`/`ArrayStore` через аксессоры |
@@ -281,6 +302,11 @@
 - ~~**L2 (`updated_at`)** — сверить с живой документацией amoCRM до фикса~~ — сверено
   в Фазе 1. Правило подтвердило себя: сводка аудита разошлась с докой по двум пунктам
   (`created_by` у задач, отсутствующий `complete_till`). Сверять доку, а не аудит.
+- **Сверять доку каждой сущности, а не одну страницу.** В Фазе 1 вывод по `leads-api`
+  («`sort` — не поле сортировки») был обобщён на весь енам и сломал сортировку
+  кастом-полей — регрессия жила до `v0.8.1`. В Фазе 2 сверка по странице на сущность
+  нашла ещё три расхождения: `source` у сделок, `is_pinned` и order у примечаний,
+  отсутствие `created_at` у контактов.
 - **Files/Drive** — бинарная загрузка, отдельный домен; самый нетривиальный пункт.
 - **Talks/Chats** — частичный паритет (disposable-flow в 1.x); зафиксировать в
   README/CHANGELOG, чтобы не вводить в заблуждение.
@@ -289,9 +315,9 @@
 
 ## Метрика готовности 1.0
 
-- [ ] CI зелёный, **phpstan level 9** (целевой гейт 1.0). — CI зелёный, level **5**.
+- [ ] CI зелёный, **phpstan level 9** (целевой гейт 1.0). — CI зелёный, level **6**.
 - [x] Баги B1–B3, L1–L8, AF1, AF2 закрыты тестами. — Фазы 0–1, `v0.8.0`.
-- [ ] Публичный API унифицирован, типизирован, старые имена срезаны.
+- [x] Публичный API унифицирован, типизирован, старые имена срезаны. — Фаза 2.
 - [ ] Доменный слой: коллекции + фабрики, Response типизированы.
 - [ ] Паритет сущностей по инвентарю (с задокументированными исключениями).
 - [ ] README + CHANGELOG + метаданные composer готовы. — `CHANGELOG` и `description`

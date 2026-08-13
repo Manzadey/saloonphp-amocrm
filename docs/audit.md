@@ -94,22 +94,21 @@
 
 ## 🔵 Дизайн и согласованность публичного API
 
-- **`send()` vs `save()`**: `ContactCreateRequest::save()` — единственное исключение,
-  у всех остальных `send()`. (`src/Modules/Contact/Requests/ContactCreateRequest.php:38`)
-- **Имена добавления модели** разнятся: `add()` / `addLead()` / `tag()` / `model()`.
-- **5 реализаций `with`**: `HasWithQuery`, `HasLeadWithQuery`, `HasContactWithQuery`,
-  `AccountRequest::with` (enum), `UserItemRequest::with` (inline-дубль). Унифицируемо.
-- **Нетипизированные ответы** (сырой `Saloon\Response`): все Tag-запросы,
-  `CustomFieldListRequest`, `UserListRequest`, `ContactCustomFieldsListRequest`.
+- ~~**`send()` vs `save()`**~~ — ✅ Фаза 2: `save()` срезан.
+- ~~**Имена добавления модели** разнятся: `add()` / `addLead()` / `tag()` / `model()`~~
+  — ✅ Фаза 2: везде `add()` / `addMany()`.
+- ~~**5 реализаций `with`**~~ — ✅ Фаза 2: одна механика, generic `HasWithQuery<TWith>`,
+  значения — енамы на сущность. Заодно нашлось, что у сделок не хватало `with=source`,
+  а у примечаний `with` не было вовсе.
+- **Нетипизированные ответы** (сырой `Saloon\Response`): все Tag-запросы. Остальные
+  закрыты (`UserListRequest`, `ContactCustomFieldsListRequest` — раньше,
+  `CustomFieldListRequest` — в Фазе 2). Теги требуют новых Response-классов → Фаза 3.
 - **Пробелы доступности**: `notes()` / `tags()` проброшены только в `LeadReference`,
   хотя `NoteReferences` / `TagReference` универсальны по `entityType` —
   Contacts/Tasks их лишены без причины.
 - **Отсутствуют операции**: Contacts без `item()` / `update()`; Tasks/Notes/Users без
   `update()`; `delete()` нет нигде; нет batch-операций.
-- **Опечатка в публичном enum**: `GrandTypeEnum` → должно быть `GrantTypeEnum`
-  (`grant_type`). Значения (`authorization_code` / `refresh_token`) верны, но имя
-  класса при заморозке 1.0 фиксируется — переименовать до тега.
-  (`src/Enum/GrandTypeEnum.php`)
+- ~~**Опечатка в публичном enum**: `GrandTypeEnum` → `GrantTypeEnum`~~ — ✅ Фаза 2.
 - ~~**AF2 — протекающая база фильтров.** `AbstractFilter` плоско раздаёт подклассам
   ключи, невалидные для их сущности: `TaskFilter extends AbstractFilter` наследует
   `createdAt()` / `updatedBy()` / `name()` / `closestTaskAt()` / `customFieldsValues()`,
@@ -121,7 +120,8 @@
   что аудит ошибался насчёт `created_by` у задач — в доке его нет, в базе он не
   оставлен. Трейт под общие ключи не заводился: подклассов два, и второй потребитель
   этих методов появится только с `ContactFilter` / `CompanyFilter` — тогда и
-  извлекать. (`src/Filters/AbstractFilter.php`)
+  извлекать. **В Фазе 2 потребитель пришёл**: у контактов ровно эти шесть ключей, и
+  они вынесены в `Filters\HasCommonEntityFilters`. (`src/Filters/AbstractFilter.php`)
 
 ---
 
