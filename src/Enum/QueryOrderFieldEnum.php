@@ -6,8 +6,10 @@ namespace Manzadey\SaloonAmoCrm\Enum;
 
 /**
  * Объединение полей сортировки по всем сущностям, а не набор, валидный для каждой:
- * сделки принимают `created_at`/`updated_at`/`id`, задачи — `created_at`/`complete_till`/`id`.
- * Сортировка задач по `updated_at` (как и сделок по `complete_till`) будет API отклонена.
+ * сделки принимают `created_at`/`updated_at`/`id`, контакты и примечания —
+ * `updated_at`/`id`, задачи — `created_at`/`complete_till`/`id`, кастом-поля —
+ * `sort`/`id`. Комбинацию из чужой сущности (задачи по `updated_at`, сделки по
+ * `sort`) енам не отсекает — её отклонит API.
  */
 enum QueryOrderFieldEnum: string
 {
@@ -18,4 +20,6 @@ enum QueryOrderFieldEnum: string
     case UPDATED_AT = 'updated_at';
 
     case COMPLETE_TILL = 'complete_till';
+
+    case SORT = 'sort';
 }

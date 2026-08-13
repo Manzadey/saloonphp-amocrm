@@ -49,15 +49,18 @@
 | L5 | `NoteItemResponse::note()` объявлен `?NoteModel`, но всегда возвращает модель даже из пустого JSON. Остальные Item-ответы (`lead/task/user`) корректно возвращают `null` | `src/Modules/Note/Responses/NoteItemResponse.php:12` | medium |
 | L6 | `HasFilterQuery::filter` через `array_merge_recursive`: повторный вызов с тем же скалярным ключом аккумулирует значение в массив. `TaskReference::list()` пресидит `entity_type` — повторный пользовательский фильтр сломает запрос | `src/Query/HasFilterQuery.php:16` | low-med |
 | L7 | `newest()` → `ASC`, `latest()` → `DESC`: семантически противоречиво (newest обычно DESC). Тихо возвращает не тот порядок сортировки. **Решено удалением `newest()`**: остались `latest()` (DESC) и новый `oldest()` (ASC) — вместо двух дублирующихся методов пара с явной семантикой | `src/Query/HasOrderQuery.php:25` | low (спорно) |
-| L8 | `QueryOrderFieldEnum::SORT = 'sort'` — **не валидное поле сортировки**. `sort` — свойство позиции (воронки/этапы/поля), не ключ сортировки списков. `order[sort]=…` будет проигнорирован/ошибка. **Исправлено**: `SORT` удалён, добавлен `COMPLETE_TILL` — при сверке выяснилось, что у задач валидны `created_at`/`complete_till`/`id`, и `complete_till` в енаме отсутствовал | `src/Enum/QueryOrderFieldEnum.php:15` | medium ✓ |
+| L8 | `QueryOrderFieldEnum::SORT = 'sort'` — вывод аудита «не валидное поле сортировки» верен **только для сделок и задач**. **Исправлено в два приёма**: в Фазе 1 добавлен `COMPLETE_TILL` (у задач валидны `created_at`/`complete_till`/`id`, его не было) и удалён `SORT`; в `v0.8.1` `SORT` возвращён — у кастом-полей это как раз валидное поле сортировки (доке пример `order[sort]=asc`), и его удаление сломало три custom-fields-запроса | `src/Enum/QueryOrderFieldEnum.php:15` | medium ✓ |
 | AF1 | `AbstractFilter::range()` использует `array_filter(compact('from','to'))` **без колбэка** → отбрасывает не только `null`, но и `0`/любые falsy. Вред: `LeadFilter::price(0, 1000)` теряет границу `from=0` (`['to'=>1000]`); то же для нулевых таймстампов. Нужно `fn($v) => $v !== null` | `src/Filters/AbstractFilter.php:16` | medium |
 
 > ⚠️ L2 требует сверки с актуальной документацией amoCRM по ключу фильтра
 > (`updated_at`) перед правкой.
 >
-> ✓ L8 — сверено с [докой amoCRM v4 (параметр `order`)](https://www.amocrm.ru/developers/content/crm_platform/leads-api)
-> и фильтрами SDK (`HasOrderInterface`, `*Filter.php`): поля `created_at` / `updated_at` / `id`,
-> направления `asc` / `desc`; `sort` отсутствует.
+> ✓ L8 — сверено с [докой amoCRM v4 (параметр `order`)](https://www.amocrm.ru/developers/content/crm_platform/leads-api):
+> у сделок поля `created_at` / `updated_at` / `id`, направления `asc` / `desc`, `sort` отсутствует.
+> **Проверять доку каждой сущности, а не одну.** Набор `order`-полей у каждой свой, и
+> у [кастом-полей](https://www.amocrm.ru/developers/content/crm_platform/custom-fields)
+> это `sort` / `id`. Вывод по одной странице `leads-api` был обобщён на весь енам — так
+> и возникла регрессия `v0.8.0`. Полная сверенная матрица — в спеке Фазы 2.
 
 **Общий корень L3 / L4 / L6** — `array_merge_recursive` применён к ассоциативным
 картам, где нужен `array_replace` / прямое присваивание.
