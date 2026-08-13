@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Tag\Requests;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Tag\TagModel;
 
 trait HasTags
@@ -13,10 +14,7 @@ trait HasTags
      */
     public function tags(): array
     {
-        return array_map(
-            static fn (array $tag): TagModel => new TagModel($tag),
-            $this->get('_embedded.tags', []),
-        );
+        return ModelCollection::of(TagModel::class, $this->get('_embedded.tags'))->all();
     }
 
     /**
@@ -63,10 +61,7 @@ trait HasTags
      */
     public function tagsToAdd(): array
     {
-        return array_map(
-            static fn (array $tag): TagModel => new TagModel($tag),
-            $this->get('tags_to_add', []),
-        );
+        return ModelCollection::of(TagModel::class, $this->get('tags_to_add'))->all();
     }
 
     /**

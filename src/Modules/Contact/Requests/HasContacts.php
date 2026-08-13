@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Contact\Requests;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Contact\ContactModel;
 use Saloon\Repositories\ArrayStore;
 
@@ -17,10 +18,7 @@ trait HasContacts
      */
     public function contacts(): array
     {
-        return array_map(
-            static fn (array $contact): ContactModel => new ContactModel($contact),
-            $this->get('_embedded.contacts', [])
-        );
+        return ModelCollection::of(ContactModel::class, $this->get('_embedded.contacts'))->all();
     }
 
     /**

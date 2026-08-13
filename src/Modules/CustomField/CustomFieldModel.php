@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\CustomField;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Model;
 
 class CustomFieldModel extends Model
@@ -66,20 +67,13 @@ class CustomFieldModel extends Model
     }
 
     /**
-     * @return array<CustomFieldValueModel>
+     * @return list<CustomFieldValueModel>
      */
     public function values(): array
     {
-        return array_map(
-            static fn (array $value): CustomFieldValueModel => new CustomFieldValueModel($value),
-            $this->get('values', [])
-        );
+        return ModelCollection::of(CustomFieldValueModel::class, $this->get('values'))->all();
     }
 
-    /**
-     * @param array<CustomFieldValueModel|array> $values
-     * @return $this
-     */
     /**
      * @param list<CustomFieldValueModel|array<string, mixed>> $values
      */
@@ -96,24 +90,23 @@ class CustomFieldModel extends Model
         );
     }
 
-    public function addValue(mixed $value): static
+    /**
+     * Скаляр — сокращение для `['value' => …]`: у большинства полей значение одно, и
+     * писать обёртку руками незачем. `float` в перечислении не для красоты — числовые
+     * поля amoCRM отдают дробные значения.
+     *
+     * @param CustomFieldValueModel|array<string, mixed>|string|int|float|bool|null $value
+     */
+    public function addValue(CustomFieldValueModel|array|string|int|float|bool|null $value): static
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return $this;
         }
 
-        $values = $this->values();
-
-        if ($value instanceof CustomFieldValueModel) {
-            $value = $value->all();
+        if (is_scalar($value)) {
+            $value = ['value' => $value];
         }
 
-        if (is_string($value) || is_int($value) || is_bool($value)) {
-            $value = compact('value');
-        }
-
-        $values[] = $value;
-
-        return $this->setValues($values);
+        return $this->setValues([...$this->values(), $value]);
     }
 }
