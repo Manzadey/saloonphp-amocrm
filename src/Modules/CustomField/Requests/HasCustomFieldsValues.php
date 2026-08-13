@@ -13,7 +13,7 @@ use Saloon\Repositories\ArrayStore;
 trait HasCustomFieldsValues
 {
     /**
-     * @return array<CustomFieldModel>
+     * @return list<CustomFieldModel>
      */
     public function customFieldsValues(): array
     {
@@ -24,7 +24,7 @@ trait HasCustomFieldsValues
     }
 
     /**
-     * @param array<CustomFieldModel|array> $fields
+     * @param list<CustomFieldModel|array<string, mixed>> $fields
      * @return $this
      */
     public function setCustomFieldsValues(array $fields): static
@@ -40,6 +40,9 @@ trait HasCustomFieldsValues
         );
     }
 
+    /**
+     * @param CustomFieldModel|array<string, mixed> $field
+     */
     public function addCustomFieldsValue(CustomFieldModel|array $field): static
     {
         $fields = $this->customFieldsValues();

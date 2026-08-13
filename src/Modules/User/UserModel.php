@@ -48,11 +48,17 @@ class UserModel extends Model
         return $this->add('lang', $lang);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function rights(): ?array
     {
         return $this->get('rights');
     }
 
+    /**
+     * @param array<string, mixed> $rights
+     */
     public function setRights(array $rights): static
     {
         return $this->add('rights', $rights);

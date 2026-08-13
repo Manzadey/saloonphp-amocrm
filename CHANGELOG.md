@@ -60,6 +60,10 @@ the same mistake that produced the 0.8.1 regression.
 - The six filter keys shared by leads and contacts moved from `LeadFilter` into the
   `HasCommonEntityFilters` trait. Signatures unchanged.
 - `HasContactWithQuery` moved to `Modules\Contact\Requests\Traits`.
+- PHPStan is enforced at level 6 (was 5). Every `array` in the public API now
+  declares its value type, so callers get real errors instead of `mixed` — e.g.
+  `$lead->tags()[0]` is a `TagModel`, not an unknown. Internal quality gate, no
+  runtime effect.
 
 ### Upgrading
 

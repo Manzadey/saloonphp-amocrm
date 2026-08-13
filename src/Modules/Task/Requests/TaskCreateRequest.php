@@ -20,6 +20,9 @@ class TaskCreateRequest extends AbstractTaskRequest implements HasBody
 
     protected ?string $response = TaskCreateResponse::class;
 
+    /**
+     * @param TaskModel|array<string, mixed> $model
+     */
     public function add(TaskModel|array $model): static
     {
         $this->body()->add(

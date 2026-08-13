@@ -20,6 +20,9 @@ class ContactCreateRequest extends AbstractContactRequest implements HasBody
 
     protected ?string $response = ContactCreateResponse::class;
 
+    /**
+     * @param ContactModel|array<string, mixed> $model
+     */
     public function add(ContactModel|array $model): static
     {
         if (is_array($model)) {

@@ -181,11 +181,17 @@ class TaskModel extends Model
         return $this->add('complete_till', $completeTill);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function result(): ?array
     {
         return $this->get('result');
     }
 
+    /**
+     * @param array<string, mixed> $result
+     */
     public function setResult(array $result): static
     {
         return $this->add('result', $result);

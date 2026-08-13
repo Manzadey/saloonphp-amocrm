@@ -12,6 +12,9 @@ use Saloon\Repositories\ArrayStore;
  */
 trait HasContacts
 {
+    /**
+     * @return list<ContactModel>
+     */
     public function contacts(): array
     {
         return array_map(
@@ -21,7 +24,7 @@ trait HasContacts
     }
 
     /**
-     * @param array<ContactModel|array> $contacts
+     * @param list<ContactModel|array<string, mixed>> $contacts
      * @return $this
      */
     public function setContacts(array $contacts): static
@@ -39,6 +42,9 @@ trait HasContacts
         return $this->add('_embedded', $embedded);
     }
 
+    /**
+     * @param ContactModel|array<string, mixed> $contact
+     */
     public function addContact(ContactModel|array $contact): static
     {
         $contacts = $this->contacts();

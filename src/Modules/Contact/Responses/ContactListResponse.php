@@ -14,6 +14,9 @@ class ContactListResponse extends Response
     use HasPageResponse;
     use HasLinksResponse;
 
+    /**
+     * @return list<ContactModel>
+     */
     public function contacts(): array
     {
         return array_map(

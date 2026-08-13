@@ -14,6 +14,9 @@ class TaskListResponse extends Response
     use HasPageResponse;
     use HasLinksResponse;
 
+    /**
+     * @return list<TaskModel>
+     */
     public function tasks(): array
     {
         return array_map(

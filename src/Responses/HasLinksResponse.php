@@ -11,6 +11,9 @@ use Saloon\Http\Response;
  */
 trait HasLinksResponse
 {
+    /**
+     * @return array<string, array{href: string}>|null
+     */
     public function links(): ?array
     {
         return $this->json('_links');

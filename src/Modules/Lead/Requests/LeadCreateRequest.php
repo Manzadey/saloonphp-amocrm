@@ -20,6 +20,9 @@ class LeadCreateRequest extends AbstractLeadRequest implements HasBody
 
     protected ?string $response = LeadAddResponse::class;
 
+    /**
+     * @param LeadModel|array<string, mixed> $model
+     */
     public function add(LeadModel|array $model): static
     {
         if (is_array($model)) {

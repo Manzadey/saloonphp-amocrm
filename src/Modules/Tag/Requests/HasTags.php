@@ -8,6 +8,9 @@ use Manzadey\SaloonAmoCrm\Modules\Tag\TagModel;
 
 trait HasTags
 {
+    /**
+     * @return list<TagModel>
+     */
     public function tags(): array
     {
         return array_map(
@@ -16,6 +19,9 @@ trait HasTags
         );
     }
 
+    /**
+     * @param list<TagModel|array<string, mixed>>|null $tags
+     */
     public function setTags(?array $tags = null): static
     {
         $embedded = $this->get('_embedded', []);
@@ -41,6 +47,9 @@ trait HasTags
         return $this->setTags();
     }
 
+    /**
+     * @param TagModel|array<string, mixed> $tag
+     */
     public function addTag(TagModel|array $tag): static
     {
         $tags = $this->tags();
@@ -49,6 +58,9 @@ trait HasTags
         return $this->setTags($tags);
     }
 
+    /**
+     * @return list<TagModel>
+     */
     public function tagsToAdd(): array
     {
         return array_map(
@@ -57,6 +69,9 @@ trait HasTags
         );
     }
 
+    /**
+     * @param TagModel|array<string, mixed> $tag
+     */
     public function appendToTagsToAdd(TagModel|array $tag): static
     {
         $tagsToAdd = $this->tagsToAdd();
