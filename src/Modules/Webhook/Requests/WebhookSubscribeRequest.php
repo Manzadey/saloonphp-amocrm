@@ -9,16 +9,15 @@ use Manzadey\SaloonAmoCrm\Modules\Webhook\Responses\WebhookResponse;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
-use Saloon\Http\Request;
 use Saloon\Traits\Body\HasJsonBody;
 
 /**
- * Subscribing the same destination again does not create a duplicate hook,
- * it updates the existing one's settings.
+ * Повторная подписка на тот же destination не создаёт дубль хука, а обновляет
+ * settings у существующего — это поведение самого amoCRM.
  *
  * @see https://www.amocrm.ru/developers/content/crm_platform/webhooks-api
  */
-class WebhookSubscribeRequest extends Request implements HasBody
+class WebhookSubscribeRequest extends AbstractWebhookRequest implements HasBody
 {
     use HasJsonBody;
     use SendsTypedResponse;
@@ -31,15 +30,11 @@ class WebhookSubscribeRequest extends Request implements HasBody
      * @param array<string> $settings
      */
     public function __construct(
-        protected readonly MainConnector $connector,
+        MainConnector $connector,
         protected readonly string $destination,
         protected readonly array $settings,
     ) {
-    }
-
-    public function resolveEndpoint(): string
-    {
-        return '/webhooks';
+        parent::__construct($connector);
     }
 
     /**

@@ -9,13 +9,12 @@ use Manzadey\SaloonAmoCrm\Modules\Webhook\Responses\WebhookUnsubscribeResponse;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
-use Saloon\Http\Request;
 use Saloon\Traits\Body\HasJsonBody;
 
 /**
  * @see https://www.amocrm.ru/developers/content/crm_platform/webhooks-api
  */
-class WebhookUnsubscribeRequest extends Request implements HasBody
+class WebhookUnsubscribeRequest extends AbstractWebhookRequest implements HasBody
 {
     use HasJsonBody;
     use SendsTypedResponse;
@@ -25,14 +24,10 @@ class WebhookUnsubscribeRequest extends Request implements HasBody
     protected ?string $response = WebhookUnsubscribeResponse::class;
 
     public function __construct(
-        protected readonly MainConnector $connector,
+        MainConnector $connector,
         protected readonly string $destination,
     ) {
-    }
-
-    public function resolveEndpoint(): string
-    {
-        return '/webhooks';
+        parent::__construct($connector);
     }
 
     /**
