@@ -13,7 +13,7 @@ use Saloon\Enums\Method;
 class LeadListRequest extends AbstractLeadRequest
 {
     use SendsTypedResponse;
-    use Query\HasOrderQuery;
+    use Traits\HasLeadOrderQuery;
     use Query\HasSearchQuery;
     use Traits\HasLeadWithQuery;
     use Query\HasFilterQuery;

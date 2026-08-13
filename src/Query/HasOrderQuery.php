@@ -5,31 +5,28 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Query;
 
 use Manzadey\SaloonAmoCrm\Enum\QueryOrderEnum;
-use Manzadey\SaloonAmoCrm\Enum\QueryOrderFieldEnum;
 use Saloon\Traits\RequestProperties\HasQuery;
 
 /**
+ * `latest()` / `oldest()` живут в пер-сущностных трейтах: их дефолтное поле — `::ID`
+ * конкретного енама, которое generic-параметром не выразить.
+ *
+ * @template TField of OrderField
+ *
  * @mixin HasQuery
  */
 trait HasOrderQuery
 {
-    public function order(QueryOrderFieldEnum $field, QueryOrderEnum $order): static
+    /**
+     * @param TField $field
+     */
+    public function order(OrderField $field, QueryOrderEnum $order): static
     {
         $this->query()->add('order', [
-            $field->value => $order->value
+            $field->value => $order->value,
         ]);
 
         return $this;
-    }
-
-    public function latest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
-    {
-        return $this->order($field, QueryOrderEnum::DESC);
-    }
-
-    public function oldest(QueryOrderFieldEnum $field = QueryOrderFieldEnum::ID): static
-    {
-        return $this->order($field, QueryOrderEnum::ASC);
     }
 
     public function removeOrder(): static

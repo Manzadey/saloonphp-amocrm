@@ -15,7 +15,7 @@ class ContactCustomFieldsListRequest extends AbstractContactRequest
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
     use Query\HasFilterQuery;
-    use Query\HasOrderQuery;
+    use \Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\Traits\HasCustomFieldOrderQuery;
 
     protected Method $method = Method::GET;
 

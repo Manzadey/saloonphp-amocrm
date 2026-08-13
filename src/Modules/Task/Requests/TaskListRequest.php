@@ -12,7 +12,7 @@ use Saloon\Enums\Method;
 class TaskListRequest extends AbstractTaskRequest
 {
     use SendsTypedResponse;
-    use Query\HasOrderQuery;
+    use Traits\HasTaskOrderQuery;
     use Query\HasFilterQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;

@@ -6,8 +6,8 @@ namespace Manzadey\tests\Modules\CustomField;
 
 use DateTimeImmutable;
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
-use Manzadey\SaloonAmoCrm\Enum\QueryOrderFieldEnum;
 use Manzadey\SaloonAmoCrm\Modules\Contact\Requests\ContactCustomFieldsListRequest;
+use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldOrderField;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\Requests\CustomFieldListRequest;
 use Manzadey\SaloonAmoCrm\Modules\Lead\Requests\LeadCustomFieldsListRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,6 +15,10 @@ use PHPUnit\Framework\TestCase;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 use Saloon\Http\Request;
 
+/**
+ * Регрессия v0.8.0: удаление `SORT` из общего енама лишило все три
+ * custom-fields-запроса единственного осмысленного поля сортировки.
+ */
 class CustomFieldsOrderTest extends TestCase
 {
     private MainConnector $connector;
@@ -45,13 +49,9 @@ class CustomFieldsOrderTest extends TestCase
     #[DataProvider('customFieldsRequests')]
     public function testOrdersBySortField(callable $factory): void
     {
-        $sort = QueryOrderFieldEnum::tryFrom('sort');
-
-        self::assertNotNull($sort, 'amoCRM сортирует custom_fields по sort: в доке пример order[sort]=asc');
-
         $request = $factory($this->connector);
 
-        self::assertSame(['sort' => 'asc'], $request->oldest($sort)->query()->get('order'));
-        self::assertSame(['sort' => 'desc'], $request->latest($sort)->query()->get('order'));
+        self::assertSame(['sort' => 'asc'], $request->oldest(CustomFieldOrderField::SORT)->query()->get('order'));
+        self::assertSame(['sort' => 'desc'], $request->latest(CustomFieldOrderField::SORT)->query()->get('order'));
     }
 }

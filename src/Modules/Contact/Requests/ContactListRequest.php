@@ -17,7 +17,7 @@ class ContactListRequest extends AbstractContactRequest
     use Query\HasLimitQuery;
     use Query\HasSearchQuery;
     use Query\HasFilterQuery;
-    use Query\HasOrderQuery;
+    use Traits\HasContactOrderQuery;
 
     protected Method $method = Method::GET;
 

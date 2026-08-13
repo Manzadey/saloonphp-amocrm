@@ -18,6 +18,7 @@ class NoteListRequest extends Request
     use Traits\HasNoteWithQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
+    use Traits\HasNoteOrderQuery;
     use Query\HasFilterQuery;
 
     protected Method $method = Method::GET;

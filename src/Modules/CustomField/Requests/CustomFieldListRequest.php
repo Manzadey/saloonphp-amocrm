@@ -17,7 +17,7 @@ class CustomFieldListRequest extends Request
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
     use Query\HasFilterQuery;
-    use Query\HasOrderQuery;
+    use Traits\HasCustomFieldOrderQuery;
 
     protected Method $method = Method::GET;
 
