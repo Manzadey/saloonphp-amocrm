@@ -26,17 +26,31 @@ class HasOrderQueryTest extends TestCase
         };
     }
 
-    public function testNewestOrdersByMostRecentFirst(): void
+    public function testLatestOrdersByMostRecentFirst(): void
     {
-        $request = $this->request()->newest();
+        $request = $this->request()->latest();
 
         self::assertSame(['id' => 'desc'], $request->query()->get('order'));
     }
 
-    public function testLatestOrdersByMostRecentFirst(): void
+    public function testLatestAcceptsExplicitField(): void
     {
         $request = $this->request()->latest(QueryOrderFieldEnum::CREATED_AT);
 
         self::assertSame(['created_at' => 'desc'], $request->query()->get('order'));
+    }
+
+    public function testOldestOrdersByLeastRecentFirst(): void
+    {
+        $request = $this->request()->oldest();
+
+        self::assertSame(['id' => 'asc'], $request->query()->get('order'));
+    }
+
+    public function testOldestAcceptsExplicitField(): void
+    {
+        $request = $this->request()->oldest(QueryOrderFieldEnum::UPDATED_AT);
+
+        self::assertSame(['updated_at' => 'asc'], $request->query()->get('order'));
     }
 }
