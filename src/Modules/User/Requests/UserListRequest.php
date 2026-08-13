@@ -14,6 +14,7 @@ class UserListRequest extends AbstractUserRequest
     use SendsTypedResponse;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
+    use Traits\HasUserWithQuery;
 
     protected Method $method = Method::GET;
 

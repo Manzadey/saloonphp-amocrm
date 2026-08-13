@@ -12,6 +12,7 @@ use Saloon\Enums\Method;
 class UserItemRequest extends AbstractUserRequest
 {
     use SendsTypedResponse;
+    use Traits\HasUserWithQuery;
 
     protected Method $method = Method::GET;
 
@@ -27,13 +28,6 @@ class UserItemRequest extends AbstractUserRequest
     public function resolveEndpoint(): string
     {
         return $this->endpoint . '/' . $this->id;
-    }
-
-    public function with(array $values): static
-    {
-        $this->query()->add('with', implode(',', $values));
-
-        return $this;
     }
 
     public function send(): UserItemResponse

@@ -159,8 +159,12 @@ page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
 
 | Ref-метод | Request | Method | Endpoint | Параметры | Response |
 |---|---|---|---|---|---|
-| `list()` | `UserListRequest` | GET | `/users` | page, limit | `UserListResponse` |
-| `item($id)` | `UserItemRequest` | GET | `/users/{id}` | `with` (csv через `with(array)`) | `UserItemResponse` |
+| `list()` | `UserListRequest` | GET | `/users` | page, limit, with | `UserListResponse` |
+| `item($id)` | `UserItemRequest` | GET | `/users/{id}` | with | `UserItemResponse` |
+
+**`with` пользователя** (`HasUserWithQuery`): `withRole`, `withGroup`, `withUuid`,
+`withAmojoId`, `withUserRank`, `withPhoneNumber` — поверх общего `HasWithQuery`
+(`with(array)` / `addWith(string)`, склейка в csv).
 
 **`UserModel`:** `setId`, `setName`, `setEmail`, `setLang`, `setRights(array)`.
 Read: `name` (строка). Responses: `UserListResponse` → `users()`,

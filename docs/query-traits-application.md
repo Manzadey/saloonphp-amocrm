@@ -49,16 +49,16 @@
 | `NoteListRequest` | ✅ | ✅ | — | ✅ | ⚠️ | — | **пробел: нет `HasOrderQuery`** (Notes поддерживают order) |
 | `TagListRequest` | ✅ | ✅ | ✅ | ✅ | — | — | корректно (Tags поддерживают query — проверено) |
 | `CustomFieldListRequest` | ✅ | ✅ | — | ✅ | ✅ | — | корректно |
-| `UserListRequest` | ⚠️ | ⚠️ | — | — | — | ⚠️ | **пробел: нет page/limit/with** (Users их поддерживают) |
-| `UserItemRequest` | — | — | — | — | — | 🟡 | `with` inline, не через трейт |
+| `UserListRequest` | ✅ | ✅ | — | — | — | ✅ | корректно |
+| `UserItemRequest` | — | — | — | — | — | ✅ | корректно |
 | `AccountRequest` | — | — | — | — | — | 🟡 | `with` своя реализация, не через трейт |
 
 ### Находки
 
 - **Q-GAP1 — `NoteListRequest`**: Notes поддерживают `order` (SDK: `NotesFilter` → `OrderTrait`), но трейт не подключён. Добавить `HasOrderQuery`.
-- **Q-GAP2 — `UserListRequest`**: Users поддерживают пагинацию и `with` (роли/группы), но запрос без трейтов вовсе. Добавить `HasPageQuery`, `HasLimitQuery`, `with`.
+- ~~**Q-GAP2 — `UserListRequest`**: Users поддерживают пагинацию и `with` (роли/группы), но запрос без трейтов вовсе. Добавить `HasPageQuery`, `HasLimitQuery`, `with`.~~ Закрыто: подключены `HasPageQuery`, `HasLimitQuery`, `HasUserWithQuery`.
 - **Q-GAP3 — `ContactCustomFieldsListRequest`**: custom_fields поддерживают page/limit/order/filter, но запрос «голый»; к тому же дублирует `CustomFieldListRequest` — унифицировать.
-- **Q-STYLE — `UserItemRequest` / `AccountRequest`**: `with` не через `HasWithQuery` (уже зафиксировано в спеке, Фаза 2).
+- **Q-STYLE — `AccountRequest`**: `with` не через `HasWithQuery` — своя сигнатура на одно значение (уже зафиксировано в спеке, Фаза 2). `UserItemRequest` переведён на `HasUserWithQuery`.
 - **Над-применения не найдено**: ранее спорные `TagListRequest::querySearch` и `CustomFieldListRequest::order` — **валидны** (подтверждено SDK).
 
 ---

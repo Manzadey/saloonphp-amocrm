@@ -6,6 +6,7 @@ namespace Manzadey\tests\Modules\User;
 
 use DateTimeImmutable;
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
+use Manzadey\SaloonAmoCrm\Modules\User\Requests\UserItemRequest;
 use Manzadey\SaloonAmoCrm\Modules\User\Requests\UserListRequest;
 use Manzadey\SaloonAmoCrm\Modules\User\Responses\UserListResponse;
 use PHPUnit\Framework\TestCase;
@@ -62,5 +63,29 @@ class UserListRequestTest extends TestCase
             return $request->query()->get('page') === 3
                 && $request->query()->get('limit') === 10;
         });
+    }
+
+    public function testNamedWithHelpersAreJoinedIntoCsv(): void
+    {
+        $request = (new UserListRequest($this->connector))
+            ->withRole()
+            ->withGroup()
+            ->withUserRank();
+
+        $this->assertSame('role,group,user_rank', $request->query()->get('with'));
+    }
+
+    public function testWithAcceptsArrayOfValues(): void
+    {
+        $request = (new UserListRequest($this->connector))->with(['uuid', 'amojo_id', 'phone_number']);
+
+        $this->assertSame('uuid,amojo_id,phone_number', $request->query()->get('with'));
+    }
+
+    public function testItemRequestSharesTheSameWithQuery(): void
+    {
+        $request = (new UserItemRequest($this->connector, 1))->with(['role'])->withGroup();
+
+        $this->assertSame('role,group', $request->query()->get('with'));
     }
 }
