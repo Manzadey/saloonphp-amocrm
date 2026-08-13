@@ -11,6 +11,8 @@ class NoteItemResponse extends Response
 {
     public function note(): ?NoteModel
     {
-        return new NoteModel($this->json());
+        $data = $this->json();
+
+        return empty($data) ? null : new NoteModel($data);
     }
 }

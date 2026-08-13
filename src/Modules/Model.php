@@ -18,7 +18,9 @@ class Model extends ArrayStore
         parent::__construct($data);
 
         if (!empty($this->defaults)) {
-            $this->data = array_merge_recursive($data, $this->defaults);
+            // Explicit data wins; defaults only fill missing keys (no recursive merge
+            // that would turn an overridden scalar into an array).
+            $this->data = $data + $this->defaults;
         }
     }
 

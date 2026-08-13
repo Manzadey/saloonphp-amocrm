@@ -64,7 +64,7 @@ trait HasTags
 
         foreach ($tagsToAdd as $i => $tagToAdd) {
             if ($tagToAdd instanceof TagModel) {
-                $tagsToAdd[$i] = $tag->all();
+                $tagsToAdd[$i] = $tagToAdd->all();
             }
         }
 

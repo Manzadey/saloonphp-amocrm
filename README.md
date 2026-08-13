@@ -9,7 +9,7 @@ The `Manzadey SaloonAmoCrm` package provides a set of modules and responses for 
 To install the package, use Composer:
 
 ```bash
-composer require manzadey/saloon-amocrm
+composer require manzadey/saloonphp-amocrm
 ```
 
 ## Usage
