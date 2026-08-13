@@ -13,6 +13,9 @@ class ContactCreateResponse extends Response
      * @return array
      * @throws \JsonException
      */
+    /**
+     * @return list<ContactModel>
+     */
     public function contacts(): array
     {
         return array_map(
@@ -24,6 +27,9 @@ class ContactCreateResponse extends Response
     /**
      * @return array
      * @throws \JsonException
+     */
+    /**
+     * @return list<int>
      */
     public function contactsIds(): array
     {

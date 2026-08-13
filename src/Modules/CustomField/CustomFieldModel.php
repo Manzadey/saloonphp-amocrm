@@ -80,6 +80,9 @@ class CustomFieldModel extends Model
      * @param array<CustomFieldValueModel|array> $values
      * @return $this
      */
+    /**
+     * @param list<CustomFieldValueModel|array<string, mixed>> $values
+     */
     public function setValues(array $values): static
     {
         return $this->add(

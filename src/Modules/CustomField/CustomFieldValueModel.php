@@ -13,6 +13,9 @@ class CustomFieldValueModel extends Model
         return $this->get('value');
     }
 
+    /**
+     * @param array<string, mixed>|string|bool|int $value
+     */
     public function setValue(string|bool|int|array $value): static
     {
         return $this->add('value', $value);

@@ -6,6 +6,7 @@ namespace Manzadey\SaloonAmoCrm\Modules\CustomField;
 
 class ReferrerFieldModel extends CustomFieldModel
 {
+    /** @var array<string, mixed> */
     protected array $defaults = [
         'field_code' => 'REFERRER',
     ];

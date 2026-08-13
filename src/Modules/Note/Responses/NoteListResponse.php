@@ -12,6 +12,9 @@ class NoteListResponse extends Response
 {
     use HasLinksResponse;
 
+    /**
+     * @return list<NoteModel>
+     */
     public function notes(): array
     {
         return array_map(

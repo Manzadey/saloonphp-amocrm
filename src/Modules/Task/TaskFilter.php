@@ -15,6 +15,9 @@ class TaskFilter extends AbstractFilter
         return $this;
     }
 
+    /**
+     * @param list<int|TaskTypeEnum>|int|TaskTypeEnum $type
+     */
     public function taskType(array|int|TaskTypeEnum $type): static
     {
         if (is_int($type)) {

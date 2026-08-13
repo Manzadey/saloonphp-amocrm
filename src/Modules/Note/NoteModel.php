@@ -64,11 +64,17 @@ class NoteModel extends Model
         return $this->add('responsible_user_id', $id);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function params(): ?array
     {
         return $this->get('params');
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function setParams(array $params): static
     {
         return $this->add('params', $params);

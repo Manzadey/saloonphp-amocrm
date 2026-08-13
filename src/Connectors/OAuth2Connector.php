@@ -25,6 +25,9 @@ class OAuth2Connector extends Connector implements HasBody
         return "https://$this->baseDomain/oauth2";
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function defaultBody(): array
     {
         return [

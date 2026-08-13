@@ -44,6 +44,9 @@ class NotesCreateRequest extends Request implements HasBody
         return implode('/', $path);
     }
 
+    /**
+     * @param NoteModel|array<string, mixed> $model
+     */
     public function add(NoteModel|array $model): static
     {
         if (is_array($model)) {

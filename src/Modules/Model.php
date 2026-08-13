@@ -11,8 +11,12 @@ class Model extends ArrayStore
 {
     use Makeable;
 
+    /** @var array<string, mixed> */
     protected array $defaults = [];
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [])
     {
         parent::__construct($data);
