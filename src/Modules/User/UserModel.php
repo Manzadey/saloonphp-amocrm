@@ -18,7 +18,7 @@ class UserModel extends Model
         return $this->add('id', $id);
     }
 
-    public function name(): ?int
+    public function name(): ?string
     {
         return $this->get('name');
     }

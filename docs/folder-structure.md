@@ -113,8 +113,8 @@ src/
     ├── User/                          ✓
     │
     │  ── Воронки ───────────────────────────────
-    ├── Pipeline/                      ➕
-    │   ├── Status/                    ➕  этапы воронки
+    ├── Pipeline/                      ✓  (только list; create/update/delete ➕)
+    │   ├── Status/                    ✓  этапы воронки (только чтение из `_embedded.statuses`)
     │   └── LossReason/                ➕  причины отказа
     │
     │  ── Кастом-поля ───────────────────────────
@@ -151,7 +151,7 @@ src/
     │
     │  ── Инфраструктура аккаунта ───────────────
     ├── Role/                          ➕
-    ├── Webhook/                       ➕
+    ├── Webhook/                       ✓  (list/subscribe/unsubscribe)
     ├── Widget/                        ➕
     ├── Source/                        ➕
     │   └── WebsiteButton/             ➕

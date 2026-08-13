@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Manzadey\SaloonAmoCrm\Modules\Lead\Responses;
+namespace Manzadey\SaloonAmoCrm\Modules\CustomField\Responses;
 
 use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldModel;
 use Saloon\Http\Response;
 
-class LeadCustomFieldsListResponse extends Response
+class CustomFieldsListResponse extends Response
 {
     /**
-     * @return array
+     * @return array<CustomFieldModel>
      * @throws \JsonException
      */
     public function fields(): array
