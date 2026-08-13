@@ -9,7 +9,7 @@ use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 class ContactReference
 {
     public function __construct(
-        protected MainConnector $connector
+        protected readonly MainConnector $connector
     ) {
     }
 
@@ -23,15 +23,9 @@ class ContactReference
         return $this->list()->querySearch($query);
     }
 
-    public function create(?ContactModel $contactModel = null): Requests\ContactCreateRequest
+    public function create(ContactModel $model): Requests\ContactCreateRequest
     {
-        $request = new Requests\ContactCreateRequest($this->connector);
-
-        if ($contactModel instanceof ContactModel) {
-            $request->add($contactModel);
-        }
-
-        return $request;
+        return (new Requests\ContactCreateRequest($this->connector))->add($model);
     }
 
     public function customFields(): Requests\ContactCustomFieldsListRequest

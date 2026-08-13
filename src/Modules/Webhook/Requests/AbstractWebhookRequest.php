@@ -13,7 +13,7 @@ abstract class AbstractWebhookRequest extends Request
     protected string $endpoint = '/webhooks';
 
     public function __construct(
-        protected MainConnector $connector,
+        protected readonly MainConnector $connector,
     ) {
     }
 

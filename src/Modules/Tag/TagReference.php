@@ -6,7 +6,6 @@ namespace Manzadey\SaloonAmoCrm\Modules\Tag;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
 use Manzadey\SaloonAmoCrm\Contracts\TagsContract;
-use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagAttachRequest;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagCreateRequest;
 use Manzadey\SaloonAmoCrm\Modules\Tag\Requests\TagListRequest;
@@ -25,23 +24,15 @@ class TagReference
     }
 
     /**
-     * @param TagModel|array<string, mixed>|null $tag
+     * @param TagModel|array<string, mixed> $tag
      */
-    public function create(TagModel|array|null $tag = null): TagCreateRequest
+    public function create(TagModel|array $tag): TagCreateRequest
     {
-        return TagCreateRequest::make($this->connector, $this->entityType)->when(
-            $tag !== null,
-            static function (TagCreateRequest $request) use ($tag): void {
-                $request->add($tag);
-            }
-        );
+        return TagCreateRequest::make($this->connector, $this->entityType)->add($tag);
     }
 
-    public function update(?TagsContract $model = null): TagAttachRequest
+    public function update(TagsContract $model): TagAttachRequest
     {
-        return TagAttachRequest::make($this->connector, $this->entityType)
-            ->when($model !== null, static function (TagAttachRequest $request) use ($model): void {
-                $request->add($model);
-            });
+        return TagAttachRequest::make($this->connector, $this->entityType)->add($model);
     }
 }

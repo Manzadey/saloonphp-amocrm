@@ -21,9 +21,9 @@ use Saloon\Http\Auth\AccessTokenAuthenticator;
 
 class Client
 {
-    protected MainConnector $connector;
+    protected readonly MainConnector $connector;
 
-    protected OAuth2Connector $OAuth2Connector;
+    protected readonly OAuth2Connector $OAuth2Connector;
 
     public function __construct(
         private readonly Configs\Config $config,

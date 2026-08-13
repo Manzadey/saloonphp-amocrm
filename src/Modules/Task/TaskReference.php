@@ -30,14 +30,8 @@ class TaskReference
         return new Requests\TaskItemRequest($this->connector, $id);
     }
 
-    public function create(?TaskModel $model = null): Requests\TaskCreateRequest
+    public function create(TaskModel $model): Requests\TaskCreateRequest
     {
-        $request = new Requests\TaskCreateRequest($this->connector);
-
-        if ($model instanceof TaskModel) {
-            $request->add($model);
-        }
-
-        return $request;
+        return (new Requests\TaskCreateRequest($this->connector))->add($model);
     }
 }

@@ -13,7 +13,7 @@ abstract class AbstractPipelineRequest extends Request
     protected string $endpoint = '/leads/pipelines';
 
     public function __construct(
-        protected MainConnector $connector,
+        protected readonly MainConnector $connector,
     ) {
     }
 
