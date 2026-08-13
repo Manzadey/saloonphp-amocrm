@@ -18,7 +18,7 @@ class TaskItemRequest extends AbstractTaskRequest
     protected ?string $response = TaskItemResponse::class;
 
     public function __construct(
-        protected MainConnector $connector,
+        MainConnector $connector,
         protected readonly int $id,
     ) {
         parent::__construct($connector);

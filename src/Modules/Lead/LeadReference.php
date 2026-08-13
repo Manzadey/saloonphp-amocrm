@@ -30,15 +30,9 @@ class LeadReference
         return $this->list()->querySearch($query);
     }
 
-    public function create(?LeadModel $model = null): Requests\LeadCreateRequest
+    public function create(LeadModel $model): Requests\LeadCreateRequest
     {
-        $request = new Requests\LeadCreateRequest($this->connector);
-
-        if ($model instanceof LeadModel) {
-            $request->add($model);
-        }
-
-        return $request;
+        return (new Requests\LeadCreateRequest($this->connector))->add($model);
     }
 
     public function update(): Requests\LeadUpdateRequest

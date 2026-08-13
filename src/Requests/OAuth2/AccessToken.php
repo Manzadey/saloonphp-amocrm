@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Requests\OAuth2;
 
-use Manzadey\SaloonAmoCrm\Enum\GrandTypeEnum;
+use Manzadey\SaloonAmoCrm\Enum\GrantTypeEnum;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -35,7 +35,7 @@ class AccessToken extends Request implements HasBody
         return $this;
     }
 
-    public function setGrandType(GrandTypeEnum $enum): static
+    public function setGrantType(GrantTypeEnum $enum): static
     {
         $this->body()->add('grant_type', $enum->value);
 
@@ -44,11 +44,11 @@ class AccessToken extends Request implements HasBody
 
     public function exchangeAuthCode(string $code): static
     {
-        return $this->setGrandType(GrandTypeEnum::AuthCode)->setAuthCode($code);
+        return $this->setGrantType(GrantTypeEnum::AuthCode)->setAuthCode($code);
     }
 
     public function refreshAccessToken(string $token): static
     {
-        return $this->setGrandType(GrandTypeEnum::RefreshToken)->setRefreshToken($token);
+        return $this->setGrantType(GrantTypeEnum::RefreshToken)->setRefreshToken($token);
     }
 }

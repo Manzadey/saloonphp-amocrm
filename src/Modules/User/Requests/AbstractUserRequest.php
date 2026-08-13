@@ -13,7 +13,7 @@ abstract class AbstractUserRequest extends Request
     protected string $endpoint = '/users';
 
     public function __construct(
-        protected MainConnector $connector,
+        protected readonly MainConnector $connector,
     ) {
     }
 

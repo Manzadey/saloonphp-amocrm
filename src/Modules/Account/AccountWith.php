@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Account;
 
-enum AccountWithQueryEnum: string
+use Manzadey\SaloonAmoCrm\Query\WithField;
+
+enum AccountWith: string implements WithField
 {
     case AMOJO_ID = 'amojo_id';
 

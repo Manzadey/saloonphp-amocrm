@@ -13,7 +13,7 @@ abstract class AbstractTaskRequest extends Request
     protected string $endpoint = '/tasks';
 
     public function __construct(
-        protected MainConnector $connector,
+        protected readonly MainConnector $connector,
         protected readonly ?string $entityType = null,
     ) {
     }

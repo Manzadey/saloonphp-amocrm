@@ -13,9 +13,10 @@ use Saloon\Enums\Method;
 class LeadListRequest extends AbstractLeadRequest
 {
     use SendsTypedResponse;
-    use Query\HasOrderQuery;
+    use Traits\HasLeadOrderQuery;
     use Query\HasSearchQuery;
     use Traits\HasLeadWithQuery;
+    /** @use Query\HasFilterQuery<LeadFilter> */
     use Query\HasFilterQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
@@ -23,15 +24,6 @@ class LeadListRequest extends AbstractLeadRequest
     protected Method $method = Method::GET;
 
     protected ?string $response = LeadListResponse::class;
-
-    public function addFilter(LeadFilter $filter): static
-    {
-        foreach ($filter->all() as $name => $value) {
-            $this->filter($name, $value);
-        }
-
-        return $this;
-    }
 
     /**
      * @throws \Saloon\Exceptions\Request\FatalRequestException

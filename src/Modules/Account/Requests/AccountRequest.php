@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Account\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
-use Manzadey\SaloonAmoCrm\Modules\Account\AccountWithQueryEnum;
+use Manzadey\SaloonAmoCrm\Modules\Account\AccountWith;
 use Manzadey\SaloonAmoCrm\Modules\Account\Responses\AccountResponse;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
@@ -14,13 +14,14 @@ use Saloon\Http\Request;
 class AccountRequest extends Request
 {
     use SendsTypedResponse;
+    use Traits\HasAccountWithQuery;
 
     protected Method $method = Method::GET;
 
     protected ?string $response = AccountResponse::class;
 
     /**
-     * @param array<string|AccountWithQueryEnum>|null $with
+     * @param list<AccountWith>|null $with
      */
     public function __construct(
         protected readonly MainConnector $connector,
@@ -38,34 +39,13 @@ class AccountRequest extends Request
 
     protected function defaultQuery(): array
     {
-        if (is_array($this->with)) {
-            return [
-                'with' => implode(',', $this->with),
-            ];
+        if ($this->with === null) {
+            return [];
         }
 
-        return [];
-    }
-
-    public function with(AccountWithQueryEnum|string $with): static
-    {
-        $query = $this->query()->get('with');
-        $query = is_null($query) ? [] : explode(',', $query);
-        $query[] = $with instanceof AccountWithQueryEnum ? $with->value : $with;
-        $this->query()->add('with', implode(',', $query));
-
-        return $this;
-    }
-
-    public function withAll(): static
-    {
-        $this->query()->add('with', null);
-
-        foreach (AccountWithQueryEnum::cases() as $case) {
-            $this->with($case);
-        }
-
-        return $this;
+        return [
+            'with' => implode(',', array_map(static fn (AccountWith $case): string => $case->value, $this->with)),
+        ];
     }
 
     public function send(): AccountResponse

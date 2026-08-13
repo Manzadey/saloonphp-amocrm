@@ -32,7 +32,7 @@ class TagAttachRequest extends Request implements HasBody
         return "/$this->entityType";
     }
 
-    public function model(TagsContract $model): static
+    public function add(TagsContract $model): static
     {
         $this->body()->add(value: $model->all());
 

@@ -21,9 +21,9 @@ use Saloon\Http\Auth\AccessTokenAuthenticator;
 
 class Client
 {
-    protected MainConnector $connector;
+    protected readonly MainConnector $connector;
 
-    protected OAuth2Connector $OAuth2Connector;
+    protected readonly OAuth2Connector $OAuth2Connector;
 
     public function __construct(
         private readonly Configs\Config $config,
@@ -132,8 +132,7 @@ class Client
     }
 
     /**
-     * @param array<string|\Manzadey\SaloonAmoCrm\Modules\Account\AccountWithQueryEnum>|null $with
-     * @return AccountRequest
+     * @param list<\Manzadey\SaloonAmoCrm\Modules\Account\AccountWith>|null $with
      */
     public function account(?array $with = null): AccountRequest
     {

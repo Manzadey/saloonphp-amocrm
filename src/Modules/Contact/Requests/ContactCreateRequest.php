@@ -39,15 +39,4 @@ class ContactCreateRequest extends AbstractContactRequest implements HasBody
     {
         return $this->sendTyped(ContactCreateResponse::class);
     }
-
-    /**
-     * @deprecated Псевдоним send(); в остальных модулях такого метода нет.
-     *
-     * @throws \Saloon\Exceptions\Request\FatalRequestException
-     * @throws \Saloon\Exceptions\Request\RequestException
-     */
-    public function save(): ContactCreateResponse
-    {
-        return $this->send();
-    }
 }

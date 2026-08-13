@@ -11,10 +11,10 @@ class Config
     use Makeable;
 
     public function __construct(
-        protected string $baseDomain,
-        protected string $redirectUri,
-        protected string $clientId,
-        protected string $clientSecret,
+        protected readonly string $baseDomain,
+        protected readonly string $redirectUri,
+        protected readonly string $clientId,
+        protected readonly string $clientSecret,
     ) {
     }
 

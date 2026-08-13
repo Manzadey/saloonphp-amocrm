@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Enum;
 
-enum GrandTypeEnum: string
+enum GrantTypeEnum: string
 {
     case AuthCode = 'authorization_code';
 

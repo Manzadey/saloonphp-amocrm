@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Note\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
-use Manzadey\SaloonAmoCrm\Modules\Note\NoteTypeEnum;
+use Manzadey\SaloonAmoCrm\Modules\Note\NoteFilter;
 use Manzadey\SaloonAmoCrm\Modules\Note\Responses\NoteListResponse;
 use Manzadey\SaloonAmoCrm\Query;
 use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
@@ -15,8 +15,11 @@ use Saloon\Http\Request;
 class NoteListRequest extends Request
 {
     use SendsTypedResponse;
+    use Traits\HasNoteWithQuery;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
+    use Traits\HasNoteOrderQuery;
+    /** @use Query\HasFilterQuery<NoteFilter> */
     use Query\HasFilterQuery;
 
     protected Method $method = Method::GET;
@@ -47,24 +50,5 @@ class NoteListRequest extends Request
     public function send(): NoteListResponse
     {
         return $this->sendTyped(NoteListResponse::class);
-    }
-
-    /**
-     * @param array<int>|int $id     */
-    public function filterId(array|int $id): static
-    {
-        return $this->filter('id', $id);
-    }
-
-    /**
-     * @param array<int> $ids     */
-    public function filterEntityId(array $ids): static
-    {
-        return $this->filter('entity_id', $ids);
-    }
-
-    public function filterNoteType(NoteTypeEnum $noteTypeEnum): static
-    {
-        return $this->filter('note_type', $noteTypeEnum->value);
     }
 }

@@ -8,6 +8,80 @@ releases page for those.
 
 ## [Unreleased]
 
+Phase 2 of the road to 1.0: the public API is unified and typed. Magic strings and
+the union enums they leaned on are gone — every `with`, `order` and `filter` value
+is now an enum or filter object belonging to a single entity.
+
+The sets were checked against the amoCRM docs **page by entity**, not by
+generalising one page. That is how three of the changes below were found, and it is
+the same mistake that produced the 0.8.1 regression.
+
+### Added
+
+- Per-entity sort fields: `LeadOrderField`, `ContactOrderField`, `TaskOrderField`,
+  `NoteOrderField`, `CustomFieldOrderField`.
+- Per-entity `with` values: `LeadWith`, `ContactWith`, `UserWith`, `NoteWith`,
+  `AccountWith`.
+- Filter objects: `ContactFilter`, `NoteFilter`, `TagFilter`. `addFilter()` now
+  exists on every list request.
+- `LeadWith::SOURCE` — the leads docs list both `source_id` and `source`; only the
+  first was available.
+- `NoteListRequest` gained sorting (`updated_at`, `id`) and `with=is_pinned`,
+  neither of which the package supported.
+- `CustomFieldListRequest::send()` — it was the only list request you had to send
+  through the connector by hand.
+
+### Removed
+
+- **`Enum\QueryOrderFieldEnum`** — split per entity. A single enum could not reject
+  sorting tasks by `updated_at` or leads by `sort`; the API rejected them at runtime.
+- **`ContactCreateRequest::save()`**, **`LeadUpdateRequest::addLead()`/`addLeads()`**,
+  **`TagCreateRequest::tag()`**, **`TagAttachRequest::model()`**,
+  **`TagReference::updateLead()`** — one action, one name.
+- **`NoteListRequest::filterId()`/`filterEntityId()`/`filterNoteType()`** and
+  **`TagListRequest::filterName()`/`filterId()`** — replaced by filter objects.
+
+### Changed
+
+- **`filter(string $key, $value)` is no longer public.** It could build a key the
+  entity does not accept, which amoCRM silently ignores while returning the whole
+  list. Use `addFilter()` with the filter object of that entity.
+- **`with()` takes a list of enums**, `addWith()` a single enum. `AccountRequest`
+  lost its own `with()`/`withAll()` and goes through the shared trait;
+  `AccountWithQueryEnum` is now `AccountWith`.
+- **Sorting contacts by `created_at` is no longer expressible** — amoCRM never
+  supported it. Contacts accept `updated_at` and `id`.
+- **Required parameters are `readonly`** and `create()` requires its model:
+  `LeadReference`, `ContactReference`, `TaskReference`, `TagReference::create()` and
+  `TagReference::update()`. Calling them without a model used to produce a request
+  with an empty body that amoCRM rejects.
+- `Enum\GrandTypeEnum` → `Enum\GrantTypeEnum`, `AccessToken::setGrandType()` →
+  `setGrantType()` (typo; the `grant_type` values are unchanged).
+- The six filter keys shared by leads and contacts moved from `LeadFilter` into the
+  `HasCommonEntityFilters` trait. Signatures unchanged.
+- `HasContactWithQuery` moved to `Modules\Contact\Requests\Traits`.
+
+### Upgrading
+
+| If you called | Do this instead |
+|---|---|
+| `filter('name', 'X')` on a list request | `addFilter(LeadFilter::make()->name('X'))` — filter object per entity |
+| `with(['contacts'])` | `with([LeadWith::CONTACTS])` |
+| `AccountRequest::with('version')` | `addWith(AccountWith::VERSION)` |
+| `latest(QueryOrderFieldEnum::CREATED_AT)` | `latest(LeadOrderField::CREATED_AT)` — the enum of that entity |
+| `ContactCreateRequest::save()` | `send()` |
+| `LeadUpdateRequest::addLead()` / `addLeads()` | `add()` / `addMany()` |
+| `TagCreateRequest::tag()`, `TagAttachRequest::model()` | `add()` |
+| `TagReference::updateLead($model)` | `update($model)` |
+| `NoteListRequest::filterNoteType($t)` | `addFilter(NoteFilter::make()->noteType($t))` |
+| `TagListRequest::filterName('X')` | `addFilter(TagFilter::make()->name('X'))` |
+| `leads()->create()` then `add($model)` | `leads()->create($model)` — the model is required |
+| `GrandTypeEnum`, `setGrandType()` | `GrantTypeEnum`, `setGrantType()` |
+
+Sort fields and `with` values differ per entity, and the types now enforce it:
+`TaskListRequest::latest(LeadOrderField::UPDATED_AT)` fails to type-check instead of
+being rejected by the API at runtime.
+
 ## [0.8.1] - 2026-08-13
 
 ### Fixed

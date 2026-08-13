@@ -12,14 +12,28 @@
 | `HasPageQuery` | `page(int)` | `page` |
 | `HasLimitQuery` | `limit(int)` | `limit` |
 | `HasSearchQuery` | `querySearch(string\|int)` | `query` (поиск) |
-| `HasFilterQuery` | `filter(key, value)` | `filter[...]` |
-| `HasOrderQuery` | `order()`, `latest()`, `oldest()`, `removeOrder()` | `order[...]` |
-| `HasWithQuery` | `with(array)`, `addWith(string)` | `with` |
+| `HasFilterQuery<TFilter>` | `addFilter(TFilter)`; `filter()` — `protected` | `filter[...]` |
+| `HasOrderQuery<TField>` | `order(TField, QueryOrderEnum)`, `removeOrder()` | `order[...]` |
+| `HasWithQuery<TWith>` | `with(list<TWith>)`, `addWith(TWith)` | `with` |
+
+Три трейта generic по своему типу. Пер-сущностные обёртки поверх них дают
+типизированные ярлыки и дефолты, которые generic-параметром не выразить:
+
+| Сущность | order-трейт (+ `latest()`/`oldest()`) | with-трейт | Фильтр |
+|---|---|---|---|
+| Сделки | `HasLeadOrderQuery` → `LeadOrderField` | `HasLeadWithQuery` → `LeadWith` | `LeadFilter` |
+| Контакты | `HasContactOrderQuery` → `ContactOrderField` | `HasContactWithQuery` → `ContactWith` | `ContactFilter` |
+| Задачи | `HasTaskOrderQuery` → `TaskOrderField` | — | `TaskFilter` |
+| Примечания | `HasNoteOrderQuery` → `NoteOrderField` | `HasNoteWithQuery` → `NoteWith` | `NoteFilter` |
+| Кастом-поля | `HasCustomFieldOrderQuery` → `CustomFieldOrderField` | — | `CustomFieldFilter` |
+| Теги | — (order не поддерживается) | — | `TagFilter` |
+| Пользователи | — | `HasUserWithQuery` → `UserWith` | — |
+| Аккаунт | — | `HasAccountWithQuery` → `AccountWith` (+ `withAll()`) | — |
 
 > Связанные находки аудита: L6 (`filter` аккумулирует скаляры), L7 (`newest()` был
-> инвертирован — удалён в пользу `latest()`/`oldest()`), L8 (`QueryOrderFieldEnum::SORT`
-> невалиден — удалён, добавлен `COMPLETE_TILL`), `with` (5 реализаций).
-> См. [audit.md](audit.md).
+> инвертирован — удалён в пользу `latest()`/`oldest()`), L8 (`SORT` невалиден у сделок
+> и задач, но валиден у кастом-полей — см. регрессию `v0.8.0`), `with` (5 реализаций).
+> Все закрыты. См. [audit.md](audit.md).
 
 ---
 
@@ -47,19 +61,19 @@
 | `ContactListRequest` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | корректно |
 | `ContactCustomFieldsListRequest` | ✅ | ✅ | — | ✅ | ✅ | — | трейты на месте; остаётся дубль `CustomFieldListRequest` |
 | `TaskListRequest` | ✅ | ✅ | — | ✅ | ✅ | — | корректно (query у задач нет — верно) |
-| `NoteListRequest` | ✅ | ✅ | — | ✅ | ⚠️ | — | **пробел: нет `HasOrderQuery`** (Notes поддерживают order) |
+| `NoteListRequest` | ✅ | ✅ | — | ✅ | ✅ | ✅ | корректно (order и `with=is_pinned` добавлены в Фазе 2) |
 | `TagListRequest` | ✅ | ✅ | ✅ | ✅ | — | — | корректно (Tags поддерживают query — проверено) |
 | `CustomFieldListRequest` | ✅ | ✅ | — | ✅ | ✅ | — | корректно |
 | `UserListRequest` | ✅ | ✅ | — | — | — | ✅ | корректно |
 | `UserItemRequest` | — | — | — | — | — | ✅ | корректно |
-| `AccountRequest` | — | — | — | — | — | 🟡 | `with` своя реализация, не через трейт |
+| `AccountRequest` | — | — | — | — | — | ✅ | корректно (переведён на трейт в Фазе 2) |
 
 ### Находки
 
-- **Q-GAP1 — `NoteListRequest`**: Notes поддерживают `order` (SDK: `NotesFilter` → `OrderTrait`), но трейт не подключён. Добавить `HasOrderQuery`.
+- ~~**Q-GAP1 — `NoteListRequest`**: Notes поддерживают `order`, но трейт не подключён.~~ Закрыто в Фазе 2: подключён `HasNoteOrderQuery` (`updated_at`, `id` — сверено с докой) и `with=is_pinned`, которого в пакете не было вовсе.
 - ~~**Q-GAP2 — `UserListRequest`**: Users поддерживают пагинацию и `with` (роли/группы), но запрос без трейтов вовсе. Добавить `HasPageQuery`, `HasLimitQuery`, `with`.~~ Закрыто: подключены `HasPageQuery`, `HasLimitQuery`, `HasUserWithQuery`.
 - **Q-GAP3 — `ContactCustomFieldsListRequest`**: ~~custom_fields поддерживают page/limit/order/filter, но запрос «голый»~~ — закрыто. Ответы Lead/Contact сведены к общему `CustomField\Responses\CustomFieldsListResponse`; сам запрос всё ещё дублирует обобщённый `CustomFieldListRequest` — унифицировать в Фазе 4c.
-- **Q-STYLE — `AccountRequest`**: `with` не через `HasWithQuery` — своя сигнатура на одно значение (уже зафиксировано в спеке, Фаза 2). `UserItemRequest` переведён на `HasUserWithQuery`.
+- ~~**Q-STYLE — `AccountRequest`**: `with` не через `HasWithQuery` — своя сигнатура на одно значение.~~ Закрыто в Фазе 2: единственная механика — `HasWithQuery`, значения — енамы `WithField`. `withAll()` остался в `HasAccountWithQuery`: перебор `cases()` требует знания конкретного енама.
 - **Над-применения не найдено**: ранее спорные `TagListRequest::querySearch` и `CustomFieldListRequest::order` — **валидны** (подтверждено SDK).
 
 ---
@@ -107,9 +121,12 @@
 
 ## Привязка к плану
 
-- **Q-GAP1 / Q-GAP2 / Q-GAP3** — аддитивные (не ломающие), выполнить в **Фазе 2**
-  (при унификации запросов) либо в **Фазе 4** для соответствующих сущностей.
-- **Q-STYLE** — **Фаза 2** (унификация `with` на `HasWithQuery`).
+- ~~**Q-GAP1 / Q-GAP2 / Q-GAP3**~~ — Q-GAP1 и Q-GAP2 закрыты; от Q-GAP3 остался только
+  дубль `ContactCustomFieldsListRequest` / `CustomFieldListRequest` — **Фаза 4c**.
+- ~~**Q-STYLE**~~ — закрыто в Фазе 2.
+- **Наборы `order` и `with` — пер-сущностные**, и это не косметика: до Фазы 2 общий
+  енам пропускал сортировку задач по `updated_at`. Для новой сущности набор берётся
+  из её страницы доки, а не с соседней (урок регрессии `v0.8.0`).
 - **Карта новых сущностей** — ориентир для **Фазы 4** (каждой группе — свой набор
   трейтов из таблицы выше).
 

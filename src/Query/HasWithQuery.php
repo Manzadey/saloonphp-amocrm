@@ -7,26 +7,35 @@ namespace Manzadey\SaloonAmoCrm\Query;
 use Saloon\Traits\RequestProperties\HasQuery;
 
 /**
+ * @template TWith of WithField
+ *
  * @mixin HasQuery
  */
 trait HasWithQuery
 {
+    /**
+     * @param list<TWith> $with
+     */
     public function with(array $with): static
     {
-        $this->query()->add('with', implode(',', $with));
+        $this->query()->add('with', implode(',', array_map(
+            static fn (WithField $field): string => (string) $field->value,
+            $with,
+        )));
 
         return $this;
     }
 
-    public function addWith(string $value): static
+    /**
+     * @param TWith $value
+     */
+    public function addWith(WithField $value): static
     {
-        $data = [];
-        if (is_string($with = $this->query()->get('with'))) {
-            $data = explode(',', $with);
-        }
+        $current = $this->query()->get('with');
+        $values = is_string($current) && $current !== '' ? explode(',', $current) : [];
+        $values[] = (string) $value->value;
 
-        $data[] = $value;
-        $this->with(array_unique($data));
+        $this->query()->add('with', implode(',', array_unique($values)));
 
         return $this;
     }

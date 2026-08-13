@@ -19,8 +19,8 @@ class UserItemRequest extends AbstractUserRequest
     protected ?string $response = UserItemResponse::class;
 
     public function __construct(
-        protected MainConnector $connector,
-        protected int $id,
+        MainConnector $connector,
+        protected readonly int $id,
     ) {
         parent::__construct($connector);
     }
