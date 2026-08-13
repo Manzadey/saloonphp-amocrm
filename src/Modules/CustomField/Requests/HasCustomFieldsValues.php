@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\CustomField\Requests;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldModel;
 use Saloon\Repositories\ArrayStore;
 
@@ -17,10 +18,7 @@ trait HasCustomFieldsValues
      */
     public function customFieldsValues(): array
     {
-        return array_map(
-            static fn (array $customField): CustomFieldModel => new CustomFieldModel($customField),
-            $this->get('custom_fields_values', []),
-        );
+        return ModelCollection::of(CustomFieldModel::class, $this->get('custom_fields_values'))->all();
     }
 
     /**

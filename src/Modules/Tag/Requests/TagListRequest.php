@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Tag\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
+use Manzadey\SaloonAmoCrm\Modules\Tag\Responses\TagListResponse;
 use Manzadey\SaloonAmoCrm\Modules\Tag\TagFilter;
 use Manzadey\SaloonAmoCrm\Query;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Http\Response;
 
 class TagListRequest extends Request
 {
+    use SendsTypedResponse;
     use Query\HasPageQuery;
     use Query\HasLimitQuery;
     /** @use Query\HasFilterQuery<TagFilter> */
@@ -20,6 +22,8 @@ class TagListRequest extends Request
     use Query\HasSearchQuery;
 
     protected Method $method = Method::GET;
+
+    protected ?string $response = TagListResponse::class;
 
     public function __construct(
         protected readonly MainConnector $connector,
@@ -35,8 +39,12 @@ class TagListRequest extends Request
         return "/$this->entityType/tags";
     }
 
-    public function send(): Response
+    /**
+     * @throws \Saloon\Exceptions\Request\FatalRequestException
+     * @throws \Saloon\Exceptions\Request\RequestException
+     */
+    public function send(): TagListResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(TagListResponse::class);
     }
 }

@@ -4,38 +4,36 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Contact\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Contact\ContactModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Saloon\Http\Response;
 
 class ContactCreateResponse extends Response
 {
-    /**
-     * @return array
-     * @throws \JsonException
-     */
-    /**
-     * @return list<ContactModel>
-     */
-    public function contacts(): array
-    {
-        return array_map(
-            static fn (array $contact): ContactModel => new ContactModel($contact),
-            $this->json('_embedded.contacts', [])
-        );
-    }
+    use HasEmbeddedModels;
 
     /**
-     * @return array
-     * @throws \JsonException
+     * @return ModelCollection<ContactModel>
      */
+    public function contacts(): ModelCollection
+    {
+        return $this->embedded('contacts', ContactModel::class);
+    }
+
     /**
      * @return list<int>
      */
     public function contactsIds(): array
     {
-        return array_map(
-            static fn (ContactModel $contact): int => $contact->id(),
-            $this->contacts(),
-        );
+        $ids = [];
+
+        foreach ($this->contacts() as $contact) {
+            if (($id = $contact->id()) !== null) {
+                $ids[] = $id;
+            }
+        }
+
+        return $ids;
     }
 }

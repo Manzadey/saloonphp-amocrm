@@ -81,9 +81,9 @@ Client
 `updatedBy/At`, `closedAt`, `closedTaskAt`, `isDeleted`, `score`, `accountId`.
 Трейты: `HasContacts`, `HasTags`, `HasCustomFieldsValues`.
 
-**Responses:** `LeadListResponse` → `leads()`, `lead()`, `isEmpty/isNotEmpty()`
-+ `page()`, `*PageUrl()`. `LeadAddResponse` → `leads()`, `lead()`.
-`LeadItemResponse` → `lead()`. `CustomFieldsListResponse` → `fields()`.
+**Responses:** `LeadListResponse` → `leads(): ModelCollection<LeadModel>`
++ `page()`, `*PageUrl()`. `LeadAddResponse` → `leads()`.
+`LeadItemResponse` → `lead(): ?LeadModel`. `CustomFieldsListResponse` → `fields()`.
 
 ---
 
@@ -107,8 +107,8 @@ Client
 `setCreatedAt/UpdatedAt`, `setClosestTaskAt`, `setIsDeleted`, `setIsMain`,
 `setAccountId`. Read: `isUnsorted`, `isMain`, `link`.
 
-**Responses:** `ContactListResponse` → `contacts()`, `isEmpty/isNotEmpty()`,
-page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
+**Responses:** `ContactListResponse` → `contacts(): ModelCollection<ContactModel>`,
+page/links. `ContactCreateResponse` → `contacts()`, `contactsIds(): list<int>`.
 `CustomFieldsListResponse` → `fields()`.
 
 ---
@@ -130,7 +130,8 @@ page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
 `setIsCompleted`, `setDuration`, `setResult(array)`, `setGroupId`,
 `setCreated/UpdatedBy/At`, `setAccountId`.
 
-**Responses:** `TaskListResponse` → `tasks()`, `task()`, page/links.
+**Responses:** `TaskListResponse` → `tasks(): ModelCollection<TaskModel>`, page/links.
+`TaskItemResponse` → `task(): ?TaskModel`.
 `TaskItemResponse` → `task()`.
 
 ---
@@ -158,7 +159,8 @@ page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
 `setIsNeedToTriggerDigitalPipeline`, `commonNote(text)`,
 `callIn(CallInNoteModel)`.
 
-**Responses:** `notes()`, `note()`.
+**Responses:** `NoteListResponse` / `NoteCreateResponse` → `notes(): ModelCollection<NoteModel>`;
+`NoteItemResponse` → `note(): ?NoteModel`.
 
 ---
 
@@ -174,8 +176,8 @@ page/links. `ContactCreateResponse` → `contacts()`, `contactsIds()`.
 (`with(array)` / `addWith(string)`, склейка в csv).
 
 **`UserModel`:** `setId`, `setName`, `setEmail`, `setLang`, `setRights(array)`.
-Read: `name` (строка). Responses: `UserListResponse` → `users()`,
-`isEmpty/isNotEmpty()`, page/links. `UserItemResponse` → `user()`.
+Read: `name` (строка). Responses: `UserListResponse` → `users(): ModelCollection<UserModel>`,
+page/links. `UserItemResponse` → `user(): ?UserModel`.
 
 ---
 
@@ -185,8 +187,8 @@ Read: `name` (строка). Responses: `UserListResponse` → `users()`,
 
 | Ref-метод | Request | Method | Endpoint | Параметры | Response |
 |---|---|---|---|---|---|
-| `list()` | `TagListRequest` | GET | `/{entity}/tags` | page, limit, search; `addFilter(TagFilter)` | `Saloon\Response` |
-| `create($tag)` | `TagCreateRequest` | POST | `/{entity}/tags` | body: `add(TagModel)` | `Saloon\Response` |
+| `list()` | `TagListRequest` | GET | `/{entity}/tags` | page, limit, search; `addFilter(TagFilter)` | `TagListResponse` |
+| `create($tag)` | `TagCreateRequest` | POST | `/{entity}/tags` | body: `add(TagModel)` | `TagCreateResponse` |
 | `update(TagsContract)` | `TagAttachRequest` | PATCH | `/{entity}` | body: `add()` (привязка тегов к сущности) | `Saloon\Response` |
 
 **`TagModel`:** `setId`, `setName`, `setColor(TagColorEnum|string)`.
@@ -225,17 +227,17 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
 |---|---|---|---|---|
 | `list()` | `PipelineListRequest` | GET | `/leads/pipelines` | `PipelineListResponse` |
 
-Пустой аккаунт отдаёт **204 без тела**; `json()` Saloon сам подставляет `[]`
-для пустого тела, поэтому `pipelines()` просто возвращает пустой массив.
+Пустой аккаунт отдаёт **204 без тела** — `ModelCollection::of()` превращает такое
+тело в пустую коллекцию.
 
 **`PipelineModel`:** `id`, `name`, `sort`, `isMain`, `isUnsortedOn`,
-`isArchive`, `accountId`, `statuses()` → `array<PipelineStatusModel>` из
+`isArchive`, `accountId`, `statuses()` → `list<PipelineStatusModel>` из
 `_embedded.statuses`.
 
 **`PipelineStatusModel`** (`Modules\Pipeline\Status`): `id`, `name`, `sort`,
 `isEditable`, `pipelineId`, `color`, `type`, `accountId`.
 
-**Response:** `PipelineListResponse` → `pipelines()`, `isEmpty/isNotEmpty()`.
+**Response:** `PipelineListResponse` → `pipelines(): ModelCollection<PipelineModel>`.
 
 ---
 
@@ -256,7 +258,8 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
 `isDisabled` (`true`, когда amoCRM сам отключил хук после серии неудачных
 доставок).
 
-**Responses:** `WebhookListResponse` → `webhooks()`, `isEmpty/isNotEmpty()`.
+**Responses:** `WebhookListResponse` → `webhooks(): ModelCollection<WebhookModel>`;
+`WebhookResponse` → `webhook(): ?WebhookModel`.
 `WebhookResponse` → `webhook()`.
 
 ---
@@ -309,6 +312,6 @@ Read: `name`, `type`, `accountId`, `sort`, `isApiOnly`, `link`. `id`/`name`/
 `ContactReference` не проброшены — доступны только через `LeadReference`.
 
 **Заметные пробелы:** нет item/update у Contacts, нет update у Tasks/Notes,
-нет delete нигде, нет companies/catalogs/events. Все «нетипизированные»
-запросы (все Tag-запросы) возвращают сырой `Saloon\Response` без
-модели-обёртки.
+нет delete нигде, нет companies/catalogs/events. Из «нетипизированных» остался
+только `TagAttachRequest`: PATCH `/{entity}` отдаёт `_embedded.{сущность}`, форма
+зависит от типа сущности — типизируется вместе с её update-запросом.

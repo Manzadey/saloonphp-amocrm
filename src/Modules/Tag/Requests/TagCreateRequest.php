@@ -5,18 +5,22 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\Tag\Requests;
 
 use Manzadey\SaloonAmoCrm\Connectors\MainConnector;
+use Manzadey\SaloonAmoCrm\Modules\Tag\Responses\TagCreateResponse;
 use Manzadey\SaloonAmoCrm\Modules\Tag\TagModel;
+use Manzadey\SaloonAmoCrm\Requests\SendsTypedResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 
 class TagCreateRequest extends Request implements HasBody
 {
+    use SendsTypedResponse;
     use HasJsonBody;
 
     protected Method $method = Method::POST;
+
+    protected ?string $response = TagCreateResponse::class;
 
     public function __construct(
         protected readonly MainConnector $connector,
@@ -42,8 +46,12 @@ class TagCreateRequest extends Request implements HasBody
         return $this;
     }
 
-    public function send(): Response
+    /**
+     * @throws \Saloon\Exceptions\Request\FatalRequestException
+     * @throws \Saloon\Exceptions\Request\RequestException
+     */
+    public function send(): TagCreateResponse
     {
-        return $this->connector->send($this);
+        return $this->sendTyped(TagCreateResponse::class);
     }
 }

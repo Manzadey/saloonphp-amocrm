@@ -39,6 +39,11 @@ class TagAttachRequest extends Request implements HasBody
         return $this;
     }
 
+    /**
+     * Типизированного ответа здесь нет намеренно: PATCH `/{entity}` отдаёт
+     * `_embedded.{сущность}` — форма зависит от типа сущности, а тип известен
+     * запросу, не ответу. Появится в Фазе 4a вместе с update-запросами сущностей.
+     */
     public function send(): Response
     {
         return $this->connector->send($this);

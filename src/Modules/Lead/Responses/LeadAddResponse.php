@@ -4,29 +4,20 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Lead\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Lead\LeadModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Saloon\Http\Response;
 
 class LeadAddResponse extends Response
 {
-    /**
-     * @return array<LeadModel>
-     * @throws \JsonException
-     */
-    public function leads(): array
-    {
-        return array_map(
-            static fn (array $item) => new LeadModel($item),
-            $this->json('_embedded.leads', []),
-        );
-    }
+    use HasEmbeddedModels;
 
     /**
-     * @return LeadModel|null
-     * @throws \JsonException
+     * @return ModelCollection<LeadModel>
      */
-    public function lead(): ?LeadModel
+    public function leads(): ModelCollection
     {
-        return $this->leads()[0] ?? null;
+        return $this->embedded('leads', LeadModel::class);
     }
 }
