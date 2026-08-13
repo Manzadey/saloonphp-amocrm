@@ -8,6 +8,8 @@ releases page for those.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-08-13
+
 Phase 1 of the road to 1.0: the logic bugs found by the package audit
 (`docs/audit.md`, findings L1–L7 and AF1), each fixed with a regression test.
 
@@ -87,4 +89,5 @@ Two changes need no code edit but do change the requests you send: `updatedAt()`
 starts being honoured by amoCRM (result sets get narrower), and `Model`
 subclasses with defaults now respect the values you pass in.
 
-[Unreleased]: https://github.com/Manzadey/saloonphp-amocrm/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/Manzadey/saloonphp-amocrm/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/Manzadey/saloonphp-amocrm/compare/v0.7.0...v0.8.0
