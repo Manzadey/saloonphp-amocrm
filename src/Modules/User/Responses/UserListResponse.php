@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\User\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\User\UserModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Manzadey\SaloonAmoCrm\Responses\HasLinksResponse;
 use Manzadey\SaloonAmoCrm\Responses\HasPageResponse;
 use Saloon\Http\Response;
@@ -13,34 +15,13 @@ class UserListResponse extends Response
 {
     use HasPageResponse;
     use HasLinksResponse;
+    use HasEmbeddedModels;
 
     /**
-     * @return array<UserModel>
-     * @throws \JsonException
+     * @return ModelCollection<UserModel>
      */
-    public function users(): array
+    public function users(): ModelCollection
     {
-        return array_map(
-            static fn (array $user): UserModel => new UserModel($user),
-            $this->json('_embedded.users', [])
-        );
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->users());
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isNotEmpty(): bool
-    {
-        return !$this->isEmpty();
+        return $this->embedded('users', UserModel::class);
     }
 }

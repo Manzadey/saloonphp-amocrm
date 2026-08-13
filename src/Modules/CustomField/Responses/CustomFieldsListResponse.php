@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\CustomField\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\CustomField\CustomFieldModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Saloon\Http\Response;
 
 class CustomFieldsListResponse extends Response
 {
+    use HasEmbeddedModels;
+
     /**
-     * @return array<CustomFieldModel>
-     * @throws \JsonException
+     * @return ModelCollection<CustomFieldModel>
      */
-    public function fields(): array
+    public function fields(): ModelCollection
     {
-        return array_map(
-            static fn (array $customField): CustomFieldModel => new CustomFieldModel($customField),
-            $this->json('_embedded.custom_fields', []),
-        );
+        return $this->embedded('custom_fields', CustomFieldModel::class);
     }
 }

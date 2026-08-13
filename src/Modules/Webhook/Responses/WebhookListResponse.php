@@ -4,43 +4,23 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Webhook\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Webhook\WebhookModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Saloon\Http\Response;
 
 class WebhookListResponse extends Response
 {
+    use HasEmbeddedModels;
+
     /**
-     * amoCRM returns 204 No Content instead of an empty list when the
-     * account has no webhooks subscribed; Saloon's json() already falls
-     * back to an empty array for an empty body, so no extra handling is
-     * needed here.
+     * amoCRM отдаёт 204 No Content вместо пустого списка, когда подписок нет —
+     * `ModelCollection::of()` превращает такое тело в пустую коллекцию.
      *
-     * @return array<WebhookModel>
-     * @throws \JsonException
+     * @return ModelCollection<WebhookModel>
      */
-    public function webhooks(): array
+    public function webhooks(): ModelCollection
     {
-        return array_map(
-            static fn (array $webhook): WebhookModel => new WebhookModel($webhook),
-            $this->json('_embedded.webhooks', [])
-        );
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->webhooks());
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isNotEmpty(): bool
-    {
-        return !$this->isEmpty();
+        return $this->embedded('webhooks', WebhookModel::class);
     }
 }

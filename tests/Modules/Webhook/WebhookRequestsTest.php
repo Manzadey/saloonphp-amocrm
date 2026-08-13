@@ -66,10 +66,10 @@ class WebhookRequestsTest extends TestCase
         $response = $this->connector->send(new WebhookListRequest($this->connector));
 
         $this->assertInstanceOf(WebhookListResponse::class, $response);
-        $this->assertTrue($response->isNotEmpty());
+        $this->assertTrue($response->webhooks()->isNotEmpty());
         $this->assertCount(2, $response->webhooks());
 
-        $webhook = $response->webhooks()[0];
+        $webhook = $response->webhooks()->first();
         $this->assertSame(839656, $webhook->id());
         $this->assertSame('https://webhook-uri.com', $webhook->destination());
         $this->assertSame(['add_task'], $webhook->settings());
@@ -80,7 +80,7 @@ class WebhookRequestsTest extends TestCase
         $this->assertSame(1575539157, $webhook->updatedAt());
         $this->assertFalse($webhook->isDisabled());
 
-        $disabled = $response->webhooks()[1];
+        $disabled = $response->webhooks()->all()[1];
         $this->assertSame(2, $disabled->sort());
         $this->assertSame(1585816857, $disabled->updatedAt());
         $this->assertTrue($disabled->isDisabled());
@@ -94,8 +94,8 @@ class WebhookRequestsTest extends TestCase
 
         $response = $this->connector->send(new WebhookListRequest($this->connector));
 
-        $this->assertSame([], $response->webhooks());
-        $this->assertTrue($response->isEmpty());
+        $this->assertSame([], $response->webhooks()->all());
+        $this->assertTrue($response->webhooks()->isEmpty());
     }
 
     public function testSubscribeSendsDestinationAndSettingsInJsonBody(): void

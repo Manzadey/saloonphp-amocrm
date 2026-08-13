@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Contact\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Contact\ContactModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Manzadey\SaloonAmoCrm\Responses\HasLinksResponse;
 use Manzadey\SaloonAmoCrm\Responses\HasPageResponse;
 use Saloon\Http\Response;
@@ -13,33 +15,13 @@ class ContactListResponse extends Response
 {
     use HasPageResponse;
     use HasLinksResponse;
+    use HasEmbeddedModels;
 
     /**
-     * @return list<ContactModel>
+     * @return ModelCollection<ContactModel>
      */
-    public function contacts(): array
+    public function contacts(): ModelCollection
     {
-        return array_map(
-            static fn (array $contact) => new ContactModel($contact),
-            $this->json('_embedded.contacts', [])
-        );
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->contacts());
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isNotEmpty(): bool
-    {
-        return !$this->isEmpty();
+        return $this->embedded('contacts', ContactModel::class);
     }
 }

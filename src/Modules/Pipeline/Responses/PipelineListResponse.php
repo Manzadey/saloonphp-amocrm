@@ -4,42 +4,23 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Pipeline\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Pipeline\PipelineModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Saloon\Http\Response;
 
 class PipelineListResponse extends Response
 {
+    use HasEmbeddedModels;
+
     /**
-     * amoCRM returns 204 No Content instead of an empty list when the
-     * account has no pipelines; Saloon's json() already falls back to an
-     * empty array for an empty body, so no extra 204 handling is needed here.
+     * amoCRM отдаёт 204 No Content вместо пустого списка, когда воронок нет —
+     * `ModelCollection::of()` превращает такое тело в пустую коллекцию.
      *
-     * @return array<PipelineModel>
-     * @throws \JsonException
+     * @return ModelCollection<PipelineModel>
      */
-    public function pipelines(): array
+    public function pipelines(): ModelCollection
     {
-        return array_map(
-            static fn (array $pipeline): PipelineModel => new PipelineModel($pipeline),
-            $this->json('_embedded.pipelines', [])
-        );
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->pipelines());
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function isNotEmpty(): bool
-    {
-        return !$this->isEmpty();
+        return $this->embedded('pipelines', PipelineModel::class);
     }
 }

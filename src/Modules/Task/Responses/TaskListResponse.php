@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Task\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Task\TaskModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Manzadey\SaloonAmoCrm\Responses\HasLinksResponse;
 use Manzadey\SaloonAmoCrm\Responses\HasPageResponse;
 use Saloon\Http\Response;
@@ -13,20 +15,13 @@ class TaskListResponse extends Response
 {
     use HasPageResponse;
     use HasLinksResponse;
+    use HasEmbeddedModels;
 
     /**
-     * @return list<TaskModel>
+     * @return ModelCollection<TaskModel>
      */
-    public function tasks(): array
+    public function tasks(): ModelCollection
     {
-        return array_map(
-            static fn (array $lead): TaskModel => new TaskModel($lead),
-            $this->json('_embedded.tasks', [])
-        );
-    }
-
-    public function task(): ?TaskModel
-    {
-        return $this->tasks()[0] ?? null;
+        return $this->embedded('tasks', TaskModel::class);
     }
 }

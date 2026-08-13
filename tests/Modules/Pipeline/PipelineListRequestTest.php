@@ -51,9 +51,9 @@ class PipelineListRequestTest extends TestCase
         $response = $this->connector->send(new PipelineListRequest($this->connector));
 
         $this->assertInstanceOf(PipelineListResponse::class, $response);
-        $this->assertTrue($response->isNotEmpty());
+        $this->assertTrue($response->pipelines()->isNotEmpty());
 
-        $pipeline = $response->pipelines()[0];
+        $pipeline = $response->pipelines()->first();
         $this->assertSame(1, $pipeline->id());
         $this->assertSame('Sales', $pipeline->name());
         $this->assertTrue($pipeline->isMain());
@@ -70,7 +70,7 @@ class PipelineListRequestTest extends TestCase
 
         $response = $this->connector->send(new PipelineListRequest($this->connector));
 
-        $this->assertSame([], $response->pipelines());
-        $this->assertTrue($response->isEmpty());
+        $this->assertSame([], $response->pipelines()->all());
+        $this->assertTrue($response->pipelines()->isEmpty());
     }
 }

@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Manzadey\SaloonAmoCrm\Modules\Note\Responses;
 
+use Manzadey\SaloonAmoCrm\Collections\ModelCollection;
 use Manzadey\SaloonAmoCrm\Modules\Note\NoteModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Manzadey\SaloonAmoCrm\Responses\HasLinksResponse;
 use Saloon\Http\Response;
 
 class NoteListResponse extends Response
 {
     use HasLinksResponse;
+    use HasEmbeddedModels;
 
     /**
-     * @return list<NoteModel>
+     * @return ModelCollection<NoteModel>
      */
-    public function notes(): array
+    public function notes(): ModelCollection
     {
-        return array_map(
-            static fn (array $note): NoteModel => new NoteModel($note),
-            $this->json('_embedded.notes', [])
-        );
+        return $this->embedded('notes', NoteModel::class);
     }
 }

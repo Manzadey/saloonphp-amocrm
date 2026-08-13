@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace Manzadey\SaloonAmoCrm\Modules\User\Responses;
 
 use Manzadey\SaloonAmoCrm\Modules\User\UserModel;
+use Manzadey\SaloonAmoCrm\Responses\HasEmbeddedModels;
 use Saloon\Http\Response;
 
 class UserItemResponse extends Response
 {
-    /**
-     * @throws \JsonException
-     */
+    use HasEmbeddedModels;
+
     public function user(): ?UserModel
     {
-        $data = $this->json();
-
-        if (empty($data)) {
-            return null;
-        }
-
-        return new UserModel($data);
+        return $this->single(UserModel::class);
     }
 }

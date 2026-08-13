@@ -46,8 +46,8 @@ class UserListRequestTest extends TestCase
         $this->assertInstanceOf(UserListResponse::class, $response);
         $this->assertSame(2, $response->page());
         $this->assertCount(2, $response->users());
-        $this->assertSame('Ivan Ivanov', $response->users()[0]->name());
-        $this->assertTrue($response->isNotEmpty());
+        $this->assertSame('Ivan Ivanov', $response->users()->first()?->name());
+        $this->assertTrue($response->users()->isNotEmpty());
     }
 
     public function testLimitAndPageAreSentAsQueryParameters(): void
